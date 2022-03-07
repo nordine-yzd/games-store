@@ -23,18 +23,21 @@ export function makeApp(db: Db): core.Express {
     response.render("login");
   });
 
+  //create function userLogControl
+  async function userLogControl(login: string, password: string) {
+    const foundUser = await db.collection("users").findOne({
+      login: login,
+      password: password,
+    });
+    return foundUser;
+  }
   //create root for formulaire
-  app.post("/loginForm", formParser, async (request, response) => {
+  app.post("/loginForm", formParser, (request, response) => {
     const userNameForm = request.body.username;
     const passwordForm = request.body.password;
 
     //check to db if username exist and password it's good
-    const userLog = await db.collection("users").findOne({
-      login: userNameForm,
-      password: passwordForm,
-    });
-
-    if (userLog === null) {
+    if (userLogControl(userNameForm, passwordForm) === null) {
       const errorMessage = "Not Found";
       response.render("login", { errorMessage });
     } else {
@@ -53,15 +56,22 @@ export function makeApp(db: Db): core.Express {
     const loginForm = request.body.login;
     const passwordForm = request.body.password;
 
-    //add user in DB
-    db.collection("users").insertOne({
-      firstName: firstNameForm,
-      lastName: lastNameForm,
-      email: emailForm,
-      password: passwordForm,
-      login: loginForm,
-    });
-    response.redirect("/");
+    console.log(userLogControl(loginForm, passwordForm));
+    //check if user exit in the DB
+    if (userLogControl(loginForm, passwordForm) === null) {
+      const errorMessage = "Not Found";
+      response.render("createAccountForm", { errorMessage });
+    } else {
+      //add user in DB
+      db.collection("users").insertOne({
+        firstName: firstNameForm,
+        lastName: lastNameForm,
+        email: emailForm,
+        password: passwordForm,
+        login: loginForm,
+      });
+      response.redirect("/");
+    }
   });
 
   return app;
