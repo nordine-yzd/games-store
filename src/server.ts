@@ -14,7 +14,12 @@ export function makeApp(db: Db): core.Express {
   app.set("view engine", "njk");
 
   app.get("/", (request: Request, response: Response) => {
-    response.render("index");
+    response.render("home");
+  });
+
+  //create root for login
+  app.get("/login", (request: Request, response: Response) => {
+    response.render("login");
   });
 
   return app;
