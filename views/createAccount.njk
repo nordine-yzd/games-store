@@ -12,5 +12,8 @@
       Login
     </button>
   </form>
+  {% if errorMessage %}
+    <div>User already exist</div>
+  {% endif %}
 {% endblock %}
 
