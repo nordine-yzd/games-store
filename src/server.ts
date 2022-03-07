@@ -49,19 +49,20 @@ export function makeApp(db: Db): core.Express {
   app.get("/createAccount", (request: Request, response: Response) => {
     response.render("createAccount");
   });
-  app.post("/createAccountForm", formParser, (request, response) => {
+  //create root for create an account
+  app.get("/createAccount", (request: Request, response: Response) => {
+    response.render("createAccount");
+  });
+  app.post("/createAccountForm", formParser, async (request, response) => {
     const firstNameForm = request.body.firstName;
     const lastNameForm = request.body.lastName;
     const emailForm = request.body.email;
     const loginForm = request.body.login;
     const passwordForm = request.body.password;
 
-    console.log(userLogControl(loginForm, passwordForm));
+    const userFound = await userLogControl(loginForm, passwordForm);
     //check if user exit in the DB
-    if (userLogControl(loginForm, passwordForm) === null) {
-      const errorMessage = "Not Found";
-      response.render("createAccountForm", { errorMessage });
-    } else {
+    if (userFound === null) {
       //add user in DB
       db.collection("users").insertOne({
         firstName: firstNameForm,
@@ -71,6 +72,9 @@ export function makeApp(db: Db): core.Express {
         login: loginForm,
       });
       response.redirect("/");
+    } else {
+      const errorMessage = "Not Found";
+      response.render("createAccount", { errorMessage });
     }
   });
 
