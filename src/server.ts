@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import * as core from "express-serve-static-core";
 import { Db } from "mongodb";
 import nunjucks from "nunjucks";
+import { platform } from "os";
 
 export function makeApp(db: Db): core.Express {
   const app = express();
@@ -21,6 +22,36 @@ export function makeApp(db: Db): core.Express {
   //create root for login
   app.get("/login", (request: Request, response: Response) => {
     response.render("login");
+  });
+
+  //create root for platforms
+  app.get("/platforms", (request: Request, response: Response) => {
+    response.render("platforms");
+  });
+
+  //create root for platforms slug
+  app.get("/platforms/:platformId", (request: Request, response: Response) => {
+    //to complete
+  });
+
+  //create root for games
+  app.get("/games", (request: Request, response: Response) => {
+    //to complete
+  });
+
+  //create root for games slug
+  app.get("/games/:slug", (request: Request, response: Response) => {
+    //to complete
+  });
+
+  //create root for genres
+  app.get("/genres", (request: Request, response: Response) => {
+    //to complete
+  });
+
+  //create root for genre slug
+  app.get("/genres/:slug", (request: Request, response: Response) => {
+    //to complete
   });
 
   //create function userLogControl
