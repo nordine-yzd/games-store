@@ -30,6 +30,7 @@ export function makeApp(db: Db): core.Express {
     response.render("index");
   });
 
+  //we do use this function on all route for charge select genres
   async function chargeNavBarGenres() {
     //charge a list of genres into navbar
     //charge all game in allGames const
@@ -73,15 +74,24 @@ export function makeApp(db: Db): core.Express {
     //to complete
   });
 
-  //create root for genres
-  app.get("/genres", (request: Request, response: Response) => {
-    //to complete
-  });
+  //create root for listGamePerGenres
+  app.get(
+    "/listGamePerGenres",
+    async (request: Request, response: Response) => {
+      const param = request.query.genre;
 
-  //create root for genre slug
-  app.get("/genres/:slug", (request: Request, response: Response) => {
-    //to complete
-  });
+      const gamePerGenre = await db
+        .collection("games")
+        .find({ genres: param })
+        .toArray();
+
+      response.render("listGamePerGenres", {
+        filteredArray: await chargeNavBarGenres(),
+        arrayOfGamesPerGenre: gamePerGenre,
+      });
+      //to complete
+    }
+  );
 
   app.get("/login", (request, response) => {
     response.send(request.oidc.isAuthenticated() ? "Logged in" : "Logged out");

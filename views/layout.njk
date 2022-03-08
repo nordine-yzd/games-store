@@ -17,7 +17,7 @@
       <select name="genres" id="genres-select" onchange="location = this.value;">
         {% if filteredArray%}
           {% for genre in filteredArray %}
-            <option value="/listGamePerGenres?={{genre}}">{{genre}}</option>
+            <option value="/listGamePerGenres?genre={{genre}}">{{genre}}</option>
           {% endfor %}
         {% endif %}
       </select>
