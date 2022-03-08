@@ -3,8 +3,8 @@
 {% block top%}{% endblock %}
 {% block contenu%}
 
-  {% if arrayOfGamesPerGenre %}
-    {% for game in arrayOfGamesPerGenre %}
+  {% if gamesAll %}
+    {% for game in gamesAll%}
       <a href="/game/{{game._id}}">
         <div>
           <h3>{{game.name}}</h3>
