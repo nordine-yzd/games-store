@@ -1,6 +1,6 @@
 import express, { Request, Response } from "express";
 import * as core from "express-serve-static-core";
-import { Db } from "mongodb";
+import { Db, ObjectId } from "mongodb";
 import nunjucks from "nunjucks";
 import { platform } from "os";
 
@@ -76,8 +76,13 @@ export function makeApp(db: Db): core.Express {
   });
 
   //create root for games slug
-  app.get("/games/:slug", (request: Request, response: Response) => {
-    //to complete
+  app.get("/game/:idGame", async (request: Request, response: Response) => {
+    const idGameSelected = new ObjectId(request.params.idGame);
+    const game = await db.collection("games").findOne({ _id: idGameSelected });
+    response.render("gameDetails", {
+      filteredArray: await chargeNavBarGenres(),
+      game,
+    });
   });
 
   //create root for listGamePerGenres
@@ -95,7 +100,6 @@ export function makeApp(db: Db): core.Express {
         filteredArray: await chargeNavBarGenres(),
         arrayOfGamesPerGenre: gamePerGenre,
       });
-      //to complete
     }
   );
 

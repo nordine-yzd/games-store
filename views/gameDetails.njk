@@ -1,0 +1,11 @@
+{% extends "layout.njk" %}
+
+{% block top%}{% endblock %}
+{% block contenu%}
+  {% if game %}
+    <div>
+      <h3>{{game.name}}</h3>
+      <img src="{{game.cover.url}}"/>
+    </div>
+  {% endif %}
+{% endblock %}
