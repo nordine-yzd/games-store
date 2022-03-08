@@ -2,9 +2,7 @@ import express, { Request, Response } from "express";
 import * as core from "express-serve-static-core";
 import { Db, ObjectId } from "mongodb";
 import nunjucks from "nunjucks";
-import { platform } from "os";
-
-import { auth } from "express-openid-connect";
+import fetch from "node-fetch";
 
 export function makeApp(db: Db): core.Express {
   const app = express();
@@ -103,8 +101,17 @@ export function makeApp(db: Db): core.Express {
     }
   );
 
-  app.get("/login", (request, response) => {
-    response.send(request.oidc.isAuthenticated() ? "Logged in" : "Logged out");
+  app.get("/login", async (request, response) => {
+    const url = `${process.env.AUTH0_DOMAIN}/authorize?response_type=token&client_id=${process.env.AUTH0_CLIENT_ID}&redirect_uri=${process.env.AUTH0_REDIRECTURI}`;
+    // console.log(
+    //   `${process.env.AUTH0_DOMAIN}/oauth/tokenContent-Type: application/x-www-form-urlencodedgrant_type=authorization_code&client_id=${process.env.AUTH0_CLIENT_ID}&client_secret=${process.env.AUTH0_CLIENT_SECRET}&code=AUTHORIZATION_CODE&redirect_uri=${process.env.AUTH0_REDIRECTURI}`
+    // );
+    response.redirect(url);
+  });
+
+  app.get("/logout", async (request, response) => {
+    const url = `${process.env.AUTH0_DOMAIN}/v2/logout?client_id=${process.env.AUTH0_CLIENT_ID}&returnTo=http://localhost:3000`;
+    response.redirect(url);
   });
 
   return app;
