@@ -1,0 +1,12 @@
+{% extends "layout.njk" %}
+
+{% block top%}{% endblock %}
+{% block contenu%}
+
+  {% if arrayOfGamesPerGenre %}
+    {% for game in arrayOfGamesPerGenre %}
+      <h3>{{game.name}}</h3>
+      <img src="{{game.cover.url}}"/>
+    {% endfor %}
+  {% endif %}
+{% endblock %}
