@@ -22,7 +22,7 @@ export function makeApp(db: Db): core.Express {
     clientID: process.env.AUTH0_CLIENT_ID,
     issuerBaseURL: process.env.AUTH0_DOMAIN,
   };
-  app.use(auth(config));
+  //app.use(auth(config));
 
   app.set("view engine", "njk");
 
@@ -30,8 +30,27 @@ export function makeApp(db: Db): core.Express {
     response.render("index");
   });
 
-  app.get("/home", (request: Request, response: Response) => {
-    response.render("home");
+  async function chargeNavBarGenres() {
+    //charge a list of genres into navbar
+    //charge all game in allGames const
+    const allGames = await db.collection("games").find().toArray();
+
+    //recup all of genres
+    const genresArrayNoSort = await Promise.all(
+      allGames.map((game) => {
+        return game.genres;
+      })
+    );
+    const arrayOfGenreNoSort = genresArrayNoSort.join().split(",");
+    const filteredArray = arrayOfGenreNoSort.filter(function (ele, pos) {
+      return arrayOfGenreNoSort.indexOf(ele) == pos;
+    });
+    filteredArray.splice(0, 1);
+    return filteredArray;
+  }
+
+  app.get("/home", async (request: Request, response: Response) => {
+    response.render("home", { filteredArray: await chargeNavBarGenres() });
   });
 
   //create root for platforms
