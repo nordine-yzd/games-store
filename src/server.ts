@@ -65,7 +65,13 @@ export function makeApp(db: Db): core.Express {
   });
 
   //create root for games
-  app.get("/games", (request: Request, response: Response) => {
+  app.get("/games", async (request: Request, response: Response) => {
+    const gamesAll = await db.collection("games").find().toArray();
+
+    response.render("games", {
+      filteredArray: await chargeNavBarGenres(),
+      gamesAll,
+    });
     //to complete
   });
 
