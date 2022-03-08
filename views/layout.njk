@@ -13,7 +13,15 @@
     <li id="nav-home-link"><a href="/home">Home</a></li>
     <li id="nav-game-link"><a href="/games">Game</a></li>
     <li id="nav-platforms-link"><a href="/platforms">Platforms</a></li>
-    <li id="nav-genres-link"><a href="/genres">Genre</a></li>
+    <li id="nav-genres-link">
+      <select name="genres" id="genres-select" onchange="location = this.value;">
+        {% if filteredArray%}
+          {% for genre in filteredArray %}
+            <option value="/listGamePerGenres?={{genre}}">{{genre}}</option>
+          {% endfor %}
+        {% endif %}
+      </select>
+    </li>
     <li id="nav-login-link"><a href="/login">Sign in</a></li>
   </ul>
 </div>
