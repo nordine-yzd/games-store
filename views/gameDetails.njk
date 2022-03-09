@@ -12,5 +12,11 @@
     Add to panier
     </button>
     </a>
+
+    {% if addPanierValidate %}
+      <p>{{game.name}} ajouter au panier avec succès !</p>
+    {% endif %}
+
   {% endif %}
+
 {% endblock %}

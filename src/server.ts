@@ -60,7 +60,7 @@ export function makeApp(db: Db): core.Express {
 
   app.get("/AddGamesInToPanier", async (request, response) => {
     const param = request.query.gameSelect;
-
+    console.log(request.headers.referer);
     response.setHeader(
       "Set-Cookie",
       cookie.serialize(`gameSelected${param}`, `${param}`, {
@@ -71,9 +71,14 @@ export function makeApp(db: Db): core.Express {
         path: "/",
       })
     );
+    const idFormat = new ObjectId(`${param}`);
+    const game = await db.collection("games").findOne({ _id: idFormat });
+
     response.render("gameDetails", {
       filteredArray: await chargeNavBarGenres(),
       listPlatforms: await chargeNavBarPlatform(),
+      game,
+      addPanierValidate: true,
     });
   });
 
@@ -126,34 +131,14 @@ export function makeApp(db: Db): core.Express {
     const arrayGameSelected = [];
     for (let i = 0; i < arrayOfCookies.length; i++) {
       const idFormat = new ObjectId(arrayOfCookies[i]);
-      const test = await db.collection("games").findOne({ _id: idFormat });
-      arrayGameSelected.push(test);
+      const game = await db.collection("games").findOne({ _id: idFormat });
+      arrayGameSelected.push(game);
     }
 
     response.render("panier", {
       filteredArray: await chargeNavBarGenres(),
       listPlatforms: await chargeNavBarPlatform(),
       arrayGameSelected,
-    });
-  });
-
-  app.get("/AddGamesInToPanier", async (request, response) => {
-    const param = request.query.gameSelect;
-    const cookies = cookie.parse(request.get("cookie") || "");
-
-    response.setHeader(
-      "Set-Cookie",
-      cookie.serialize(`gameSelected${param}`, `${param}`, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV !== "development",
-        maxAge: 60 * 60,
-        sameSite: "strict",
-        path: "/",
-      })
-    );
-    response.render("gameDetails", {
-      filteredArray: await chargeNavBarGenres(),
-      listPlatforms: await chargeNavBarPlatform(),
     });
   });
 
@@ -374,12 +359,12 @@ export function makeApp(db: Db): core.Express {
   //deconnection & destroye cookie
   app.get("/logout", async (request, response) => {
     const url = `${process.env.AUTH0_DOMAIN}/v2/logout?client_id=${process.env.AUTH0_CLIENT_ID}&returnTo=http://localhost:3000`;
-    response.setHeader(
-      "Set-Cookie",
-      cookie.serialize("token", "", {
-        maxAge: 0,
-      })
-    );
+    const cookies = cookie.parse(request.get("cookie") || "");
+
+    for (const cookie in cookies) {
+      response.clearCookie(cookie);
+    }
+
     response.redirect(url);
   });
 
