@@ -224,7 +224,7 @@ export function makeApp(db: Db): core.Express {
         const currentpage = 1;
         const gamesAll = await db.collection("games").find().toArray();
 
-        const games = gamesAll.slice((currentpage - 1) * 5, currentpage * 5);
+        const games = gamesAll.slice((currentpage - 1) * 4, currentpage * 4);
         response.render("games", {
           filteredArray: await chargeNavBarGenres(),
           games,
@@ -234,7 +234,7 @@ export function makeApp(db: Db): core.Express {
       } else {
         const gamesAll = await db.collection("games").find().toArray();
 
-        const games = gamesAll.slice((currentpage - 1) * 5, currentpage * 5);
+        const games = gamesAll.slice((currentpage - 1) * 4, currentpage * 4);
         response.render("games", {
           filteredArray: await chargeNavBarGenres(),
           games,
@@ -245,7 +245,7 @@ export function makeApp(db: Db): core.Express {
     } else {
       const currentpage = 1;
       const gamesAll = await db.collection("games").find().toArray();
-      const games = gamesAll.slice((currentpage - 1) * 5, currentpage * 5);
+      const games = gamesAll.slice((currentpage - 1) * 4, currentpage * 4);
       response.render("games", {
         filteredArray: await chargeNavBarGenres(),
         games,
