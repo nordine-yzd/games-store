@@ -50,19 +50,64 @@ export function makeApp(db: Db): core.Express {
     return filteredArray;
   }
 
+  async function chargeNavBarPlatform() {
+    //charge a list of genres into navbar
+    //charge all game in allGames const
+    const allGames = await db.collection("games").find().toArray();
+
+    //recup all of genres
+    const genresArrayNoSort = await Promise.all(
+      allGames.map((game) => {
+        return game.platform.name;
+      })
+    );
+
+    const arrayOfGenreNoSort = genresArrayNoSort.join().split(",");
+    const filteredArray = arrayOfGenreNoSort.filter(function (ele, pos) {
+      return arrayOfGenreNoSort.indexOf(ele) == pos;
+    });
+    filteredArray.splice(0, 1);
+    return filteredArray;
+  }
+
   app.get("/home", async (request: Request, response: Response) => {
-    response.render("home", { filteredArray: await chargeNavBarGenres() });
+    response.render("home", {
+      filteredArray: await chargeNavBarGenres(),
+      listPlatforms: await chargeNavBarPlatform(),
+    });
   });
 
   //create root for platforms
-  app.get("/platforms", (request: Request, response: Response) => {
-    response.render("platforms");
+  app.get("/platforms", async (request: Request, response: Response) => {
+    const listPlatforms = await chargeNavBarPlatform();
+
+    response.render("platforms", {
+      listPlatforms,
+      filteredArray: await chargeNavBarGenres(),
+    });
   });
 
   //create root for platforms slug
-  app.get("/platforms/:platformId", (request: Request, response: Response) => {
-    //to complete
-  });
+  type Game = {
+    platform: {
+      name: string;
+    };
+  };
+  app.get(
+    "/listGamePerPlatforms",
+    async (request: Request, response: Response) => {
+      //to complete
+      // const param = request.query.platform;
+      // const gamesAll = await db
+      //   .collection("games")
+      //   .find()
+      //   .toArray()
+      //   .then(<Game>(game: any) => {
+      //     console.log(game.platform);
+      //   });
+      // console.log(gamesAll);
+    }
+  );
 
   //create root for games
   app.get("/games", async (request: Request, response: Response) => {
@@ -71,6 +116,7 @@ export function makeApp(db: Db): core.Express {
     response.render("games", {
       filteredArray: await chargeNavBarGenres(),
       gamesAll,
+      listPlatforms: await chargeNavBarPlatform(),
     });
     //to complete
   });
@@ -94,6 +140,7 @@ export function makeApp(db: Db): core.Express {
       response.render("listGamePerGenres", {
         filteredArray: await chargeNavBarGenres(),
         arrayOfGamesPerGenre: gamePerGenre,
+        listPlatforms: await chargeNavBarPlatform(),
       });
       //to complete
     }
