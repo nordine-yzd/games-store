@@ -13,17 +13,6 @@ export function makeApp(db: Db): core.Express {
     autoescape: true,
     express: app,
   });
-
-  const config = {
-    authRequired: false,
-    auth0Logout: true,
-    secret: process.env.AUTH0_CLIENT_SECRET,
-    baseURL: process.env.AUTH0_REDIRECTURI,
-    clientID: process.env.AUTH0_CLIENT_ID,
-    issuerBaseURL: process.env.AUTH0_DOMAIN,
-  };
-  //app.use(auth(config));
-
   app.set("view engine", "njk");
 
   app.get("/", (request: Request, response: Response) => {
@@ -88,24 +77,20 @@ export function makeApp(db: Db): core.Express {
   });
 
   //create root for platforms slug
-  type Game = {
-    platform: {
-      name: string;
-    };
-  };
   app.get(
     "/listGamePerPlatforms",
     async (request: Request, response: Response) => {
       //to complete
-      // const param = request.query.platform;
-      // const gamesAll = await db
-      //   .collection("games")
-      //   .find()
-      //   .toArray()
-      //   .then(<Game>(game: any) => {
-      //     console.log(game.platform);
-      //   });
-      // console.log(gamesAll);
+      const param = request.query.platform;
+      const gamesAllData = await db.collection("games").find().toArray();
+      const gamesAll = await Promise.all(
+        gamesAllData.filter((game) => game.platform.name === param)
+      );
+      response.render("listGamePerPlatforms", {
+        listPlatforms: await chargeNavBarPlatform(),
+        filteredArray: await chargeNavBarGenres(),
+        gamesAll,
+      });
     }
   );
 
@@ -127,6 +112,7 @@ export function makeApp(db: Db): core.Express {
     const game = await db.collection("games").findOne({ _id: idGameSelected });
     response.render("gameDetails", {
       filteredArray: await chargeNavBarGenres(),
+      listPlatforms: await chargeNavBarPlatform(),
       game,
     });
   });
@@ -173,7 +159,6 @@ export function makeApp(db: Db): core.Express {
       .then((tokken) => tokken);
 
     const tokkenAccess = tokkenData.access_token;
-    console.log(tokkenData);
     response.redirect("/home");
   });
 

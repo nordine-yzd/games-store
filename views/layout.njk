@@ -15,6 +15,7 @@
     <li id="nav-genres-link">
       <select name="genres" id="genres-select" onchange="location = this.value;">
         {% if filteredArray%}
+         <option value="" selected>Genres Select</option>
           {% for genre in filteredArray %}
             <option value="/listGamePerGenres?genre={{genre}}">{{genre}}</option>
           {% endfor %}
@@ -24,6 +25,7 @@
     <li id="nav-platforms-link">
       <select name="platforms" id="platforms-select" onchange="location = this.value;">
         {% if listPlatforms%}
+          <option value="" selected>Platforms Select</option>
           {% for platform in listPlatforms %}
             <option value="/listGamePerPlatforms?platform={{platform}}">{{platform}}</option>
           {% endfor %}
