@@ -4,6 +4,8 @@ import { Db, ObjectId } from "mongodb";
 import nunjucks from "nunjucks";
 import cookie from "cookie";
 import fetch from "node-fetch";
+import * as jose from "jose";
+const jwksUrl = new URL(`${process.env.AUTH0_JSON_WEB_KEY_SET}`);
 
 export function makeApp(db: Db): core.Express {
   const app = express();
@@ -58,20 +60,6 @@ export function makeApp(db: Db): core.Express {
     return filteredArray;
   }
 
-  app.get("/AddGamesInToPanier", (request, response) => {
-    //
-    const param = request.query.gameSelect;
-
-    const favoriteColor = "blue";
-
-    response.setHeader(
-      "Set-Cookie",
-      cookie.serialize(favoriteColor, "coucou", {
-        maxAge: 3600,
-      })
-    );
-  });
-
   app.get("/home", async (request: Request, response: Response) => {
     response.render("home", {
       filteredArray: await chargeNavBarGenres(),
@@ -90,7 +78,7 @@ export function makeApp(db: Db): core.Express {
   });
 
   app.get("/AddGamesInToPanier", (request, response) => {
-    //
+    console.log("plop");
     const param = request.query.gameSelect;
     response.setHeader(
       "Set-Cookie",
@@ -102,6 +90,7 @@ export function makeApp(db: Db): core.Express {
         path: "/",
       })
     );
+    response.render("gameDetails");
   });
 
   //create root for platforms slug
@@ -304,6 +293,15 @@ export function makeApp(db: Db): core.Express {
     )
       .then((element) => element.json())
       .then((tokken) => tokken);
+
+    const jwksKeys = jose.createRemoteJWKSet(jwksUrl);
+
+    const validToken = await jose.jwtVerify(
+      `${tokkenData.access_token}`,
+      jwksKeys
+    );
+    console.log(validToken);
+    //await jose.jwtVerify(<YOUR_ID_TOKEN>, jwksKeys);
 
     response.setHeader(
       "Set-Cookie",
