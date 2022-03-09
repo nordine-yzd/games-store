@@ -23,9 +23,11 @@
         <li class="nav-item">
           <a class="nav-link active" aria-current="page" href="/home">Home</a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="/panier">Panier</a>
-        </li>
+        {% if tokenValidate == "connexionValidé" %}
+          <li class="nav-item">
+            <a class="nav-link" href="/panier">Panier</a>
+          </li>
+        {% endif %}
          <li class="nav-item">
           <a class="nav-link" href="/games">Games</a>
         </li>
@@ -40,7 +42,6 @@
             Platforms
           </a>
           <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-
              {% for platform in listPlatforms %}
             <li><a class="dropdown-item" href="/listGamePerPlatforms?platform={{platform}}">{{platform}}</a></li>
           {% endfor %}

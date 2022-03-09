@@ -61,25 +61,36 @@ export function makeApp(db: Db): core.Express {
   }
 
   app.get("/home", async (request: Request, response: Response) => {
+    const cookies = cookie.parse(request.get("cookie") || "");
+    const token = cookies.token;
+    const tokenValidate = await checkTokken(token);
     response.render("home", {
       filteredArray: await chargeNavBarGenres(),
       listPlatforms: await chargeNavBarPlatform(),
+      tokenValidate,
     });
   });
 
   //create root for platforms
   app.get("/platforms", async (request: Request, response: Response) => {
     const listPlatforms = await chargeNavBarPlatform();
+    const cookies = cookie.parse(request.get("cookie") || "");
+    const token = cookies.token;
+    const tokenValidate = await checkTokken(token);
 
     response.render("platforms", {
       listPlatforms,
       filteredArray: await chargeNavBarGenres(),
+      tokenValidate,
     });
   });
 
-  app.get("/AddGamesInToPanier", (request, response) => {
-    console.log("plop");
+  app.get("/AddGamesInToPanier", async (request, response) => {
     const param = request.query.gameSelect;
+    const cookies = cookie.parse(request.get("cookie") || "");
+    const token = cookies.token;
+    const tokenValidate = await checkTokken(token);
+
     response.setHeader(
       "Set-Cookie",
       cookie.serialize(`gameSelected${param}`, `${param}`, {
@@ -90,7 +101,60 @@ export function makeApp(db: Db): core.Express {
         path: "/",
       })
     );
-    response.render("gameDetails");
+    response.render("gameDetails", {
+      filteredArray: await chargeNavBarGenres(),
+      listPlatforms: await chargeNavBarPlatform(),
+      tokenValidate,
+    });
+  });
+
+  app.get("/deleteGamesInToPanier", async (request, response) => {
+    const param = request.query.gameSelect;
+    const cookies = cookie.parse(request.get("cookie") || "");
+    const token = cookies.token;
+    const tokenValidate = await checkTokken(token);
+
+    const arrayOfCookies: string[] = [];
+    for (const cookie in cookies) {
+      if (cookie !== "token" && cookies[cookie] === param) {
+        arrayOfCookies.push(cookie);
+      }
+    }
+    response.setHeader(
+      "Set-Cookie",
+      cookie.serialize(`${arrayOfCookies[0]}`, "", {
+        maxAge: 0,
+      })
+    );
+    response.redirect("/panier");
+  });
+
+  app.get("/panier", async (request: Request, response: Response) => {
+    const cookies = cookie.parse(request.get("cookie") || "");
+    const token = cookies.token;
+    const tokenValidate = await checkTokken(token);
+
+    const arrayOfCookies: string[] = [];
+    for (const cookie in cookies) {
+      if (cookie !== "token") {
+        arrayOfCookies.push(`${cookies[cookie]}`);
+      }
+    }
+
+    //call to the db for get games
+    const arrayGameSelected = [];
+    for (let i = 0; i < arrayOfCookies.length; i++) {
+      const idFormat = new ObjectId(arrayOfCookies[i]);
+      const test = await db.collection("games").findOne({ _id: idFormat });
+      arrayGameSelected.push(test);
+    }
+
+    response.render("panier", {
+      filteredArray: await chargeNavBarGenres(),
+      listPlatforms: await chargeNavBarPlatform(),
+      arrayGameSelected,
+      tokenValidate,
+    });
   });
 
   //create root for platforms slug
@@ -98,6 +162,10 @@ export function makeApp(db: Db): core.Express {
     "/listGamePerPlatforms",
     async (request: Request, response: Response) => {
       const page = request.query.page;
+      const cookies = cookie.parse(request.get("cookie") || "");
+      const token = cookies.token;
+      const tokenValidate = await checkTokken(token);
+
       if (typeof page === "string") {
         const currentpage = parseInt(page);
         if (isNaN(currentpage) || currentpage < 1) {
@@ -115,6 +183,7 @@ export function makeApp(db: Db): core.Express {
             games,
             currentpage,
             param,
+            tokenValidate,
           });
         } else {
           const param = request.query.platform;
@@ -129,6 +198,7 @@ export function makeApp(db: Db): core.Express {
             games,
             currentpage,
             param,
+            tokenValidate,
           });
         }
       } else {
@@ -146,14 +216,27 @@ export function makeApp(db: Db): core.Express {
           games,
           currentpage,
           param,
+          tokenValidate,
         });
       }
     }
   );
 
+  async function checkTokken(token: string) {
+    const validToken = await validateTokken(token);
+    if (validToken !== "error") {
+      return "connexionValidé";
+    } else {
+      return "error";
+    }
+  }
   //create root for games
   app.get("/games", async (request: Request, response: Response) => {
     const page = request.query.page;
+    const cookies = cookie.parse(request.get("cookie") || "");
+    const token = cookies.token;
+    const tokenValidate = await checkTokken(token);
+
     if (typeof page === "string") {
       const currentpage = parseInt(page);
       if (isNaN(currentpage) || currentpage < 1) {
@@ -166,6 +249,7 @@ export function makeApp(db: Db): core.Express {
           games,
           listPlatforms: await chargeNavBarPlatform(),
           currentpage,
+          tokenValidate,
         });
       } else {
         const gamesAll = await db.collection("games").find().toArray();
@@ -176,6 +260,7 @@ export function makeApp(db: Db): core.Express {
           games,
           listPlatforms: await chargeNavBarPlatform(),
           currentpage,
+          tokenValidate,
         });
       }
     } else {
@@ -187,6 +272,7 @@ export function makeApp(db: Db): core.Express {
         games,
         listPlatforms: await chargeNavBarPlatform(),
         currentpage,
+        tokenValidate,
       });
     }
   });
@@ -194,11 +280,15 @@ export function makeApp(db: Db): core.Express {
   //create root for games slug
   app.get("/game/:idGame", async (request: Request, response: Response) => {
     const idGameSelected = new ObjectId(request.params.idGame);
+    const cookies = cookie.parse(request.get("cookie") || "");
+    const token = cookies.token;
+    const tokenValidate = await checkTokken(token);
     const game = await db.collection("games").findOne({ _id: idGameSelected });
     response.render("gameDetails", {
       filteredArray: await chargeNavBarGenres(),
       listPlatforms: await chargeNavBarPlatform(),
       game,
+      tokenValidate,
     });
   });
 
@@ -208,6 +298,10 @@ export function makeApp(db: Db): core.Express {
     async (request: Request, response: Response) => {
       const param = request.query.genre;
       const page = request.query.page;
+      const cookies = cookie.parse(request.get("cookie") || "");
+      const token = cookies.token;
+      const tokenValidate = await checkTokken(token);
+
       if (typeof page === "string") {
         const currentpage = parseInt(page);
         if (isNaN(currentpage) || currentpage < 1) {
@@ -227,6 +321,7 @@ export function makeApp(db: Db): core.Express {
             listPlatforms: await chargeNavBarPlatform(),
             currentpage,
             param,
+            tokenValidate,
           });
         } else {
           const gamePerGenre = await db
@@ -244,6 +339,7 @@ export function makeApp(db: Db): core.Express {
             listPlatforms: await chargeNavBarPlatform(),
             currentpage,
             param,
+            tokenValidate,
           });
         }
       } else {
@@ -254,13 +350,14 @@ export function makeApp(db: Db): core.Express {
           .toArray();
 
         const game = gamePerGenre.slice((currentpage - 1) * 5, currentpage * 5);
-
+        console.log(game);
         response.render("listGamePerGenres", {
           filteredArray: await chargeNavBarGenres(),
           arrayOfGamesPerGenre: game,
           listPlatforms: await chargeNavBarPlatform(),
           currentpage,
           param,
+          tokenValidate,
         });
       }
     }
@@ -276,6 +373,13 @@ export function makeApp(db: Db): core.Express {
     }
   });
 
+  async function validateTokken(tokken: string) {
+    const jwksKeys = jose.createRemoteJWKSet(jwksUrl);
+    const validToken = await jose
+      .jwtVerify(`${tokken}`, jwksKeys)
+      .catch((error) => "error");
+    return validToken;
+  }
   //create cookie
   app.get("/callback", async (request: Request, response: Response) => {
     const param = request.query.code;
@@ -294,15 +398,6 @@ export function makeApp(db: Db): core.Express {
       .then((element) => element.json())
       .then((tokken) => tokken);
 
-    const jwksKeys = jose.createRemoteJWKSet(jwksUrl);
-
-    const validToken = await jose.jwtVerify(
-      `${tokkenData.access_token}`,
-      jwksKeys
-    );
-    console.log(validToken);
-    //await jose.jwtVerify(<YOUR_ID_TOKEN>, jwksKeys);
-
     response.setHeader(
       "Set-Cookie",
       cookie.serialize("token", tokkenData.access_token, {
@@ -313,7 +408,7 @@ export function makeApp(db: Db): core.Express {
         path: "/",
       })
     );
-    response.redirect("/home");
+    response.render("home", { tokenValidate: "connexionValidé" });
   });
 
   //deconnection & destroye cookie

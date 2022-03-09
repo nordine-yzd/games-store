@@ -7,10 +7,12 @@
       <h3>{{game.name}}</h3>
       <img src="{{game.cover.url}}"/>
     </div>
+    {% if tokenValidate == "connexionValidé" %}
     <a href="/AddGamesInToPanier?gameSelect={{game._id}}">
     <button type="button">
     Add to panier
     </button>
-</a>
+    </a>
+    {% endif %}
   {% endif %}
 {% endblock %}
