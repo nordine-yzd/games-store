@@ -119,10 +119,12 @@ export function makeApp(db: Db): core.Express {
       const gamesAll = await Promise.all(
         gamesAllData.filter((game) => game.platform.name === param)
       );
+
+      const games =  gamesAll.slice(((currentpage - 1 ) * 5), currentpage * 5)
       response.render("listGamePerPlatforms", {
         listPlatforms: await chargeNavBarPlatform(),
         filteredArray: await chargeNavBarGenres(),
-        gamesAll, currentpage, param
+        games, currentpage, param
       });
     }else {
       const param = request.query.platform;
@@ -130,10 +132,11 @@ export function makeApp(db: Db): core.Express {
       const gamesAll = await Promise.all(
         gamesAllData.filter((game) => game.platform.name === param)
       );
+      const games =  gamesAll.slice(((currentpage - 1 ) * 5), currentpage * 5)
       response.render("listGamePerPlatforms", {
         listPlatforms: await chargeNavBarPlatform(),
         filteredArray: await chargeNavBarGenres(),
-        gamesAll, currentpage, param
+        games, currentpage, param
       });
     }
 
@@ -144,10 +147,12 @@ export function makeApp(db: Db): core.Express {
       const gamesAll = await Promise.all(
         gamesAllData.filter((game) => game.platform.name === param)
       );
+
+      const games =  gamesAll.slice(((currentpage - 1 ) * 5), currentpage * 5)
       response.render("listGamePerPlatforms", {
         listPlatforms: await chargeNavBarPlatform(),
         filteredArray: await chargeNavBarGenres(),
-        gamesAll, currentpage, param
+        games, currentpage, param
       });
   }
     }
@@ -163,7 +168,7 @@ export function makeApp(db: Db): core.Express {
       const currentpage = 1
       const gamesAll = await db.collection("games").find().toArray();
 
-      const games = gamesAll.slice(currentpage - 1 * 5, currentpage * 5)
+      const games =  gamesAll.slice(((currentpage - 1 ) * 5), currentpage * 5)
     response.render("games", {
       filteredArray: await chargeNavBarGenres(),
       games,
@@ -172,18 +177,17 @@ export function makeApp(db: Db): core.Express {
     }else {
       const gamesAll = await db.collection("games").find().toArray();
 
-      const games = gamesAll.slice(currentpage - 1 * 5, currentpage * 5)
+      const games =  gamesAll.slice(((currentpage - 1 ) * 5), currentpage * 5)
     response.render("games", {
       filteredArray: await chargeNavBarGenres(),
       games,
       listPlatforms: await chargeNavBarPlatform(), currentpage
     });
     }
-
   } else {
     const currentpage = 1
     const gamesAll = await db.collection("games").find().toArray();
-    const games = gamesAll.slice(currentpage - 1 * 5, currentpage * 5)
+    const games =  gamesAll.slice(((currentpage - 1 ) * 5), currentpage * 5)
     response.render("games", {
       filteredArray: await chargeNavBarGenres(),
       games,
@@ -218,22 +222,20 @@ export function makeApp(db: Db): core.Express {
           .find({ genres: param })
           .toArray();
 
-          console.log(gamePerGenre)
-          const game= gamePerGenre.slice(currentpage - 1 * 5, currentpage * 5)
-          console.log(game)
+          const game =  gamePerGenre.slice(((currentpage - 1 ) * 5), currentpage * 5)
         response.render("listGamePerGenres", {
           filteredArray: await chargeNavBarGenres(),
           arrayOfGamesPerGenre: game,
           listPlatforms: await chargeNavBarPlatform(), currentpage, param
         });
-        }else {
+        } else {
           const gamePerGenre = await db
           .collection("games")
           .find({ genres: param })
           .toArray();
 
-          console.log(gamePerGenre)
-          const game= gamePerGenre.slice(currentpage - 1 * 5, currentpage * 5)
+
+          const game =  gamePerGenre.slice(((currentpage - 1 ) * 5), currentpage * 5)
         response.render("listGamePerGenres", {
           filteredArray: await chargeNavBarGenres(),
           arrayOfGamesPerGenre: game,
@@ -247,8 +249,8 @@ export function makeApp(db: Db): core.Express {
         .find({ genres: param })
         .toArray();
 
-        console.log( gamePerGenre)
-        const game =  gamePerGenre.slice(currentpage - 1 * 5, currentpage * 5)
+        const game =  gamePerGenre.slice(((currentpage - 1 ) * 5), currentpage * 5)
+        console.log(game)
       response.render("listGamePerGenres", {
         filteredArray: await chargeNavBarGenres(),
         arrayOfGamesPerGenre: game,
