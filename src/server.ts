@@ -108,92 +108,98 @@ export function makeApp(db: Db): core.Express {
   app.get(
     "/listGamePerPlatforms",
     async (request: Request, response: Response) => {
-
       const page = request.query.page;
-  if (typeof page === "string"){
-    const currentpage = parseInt(page)
-    if (isNaN(currentpage) || currentpage < 1){
-      const currentpage = 1
-      const param = request.query.platform;
-      const gamesAllData = await db.collection("games").find().toArray();
-      const gamesAll = await Promise.all(
-        gamesAllData.filter((game) => game.platform.name === param)
-      );
+      if (typeof page === "string") {
+        const currentpage = parseInt(page);
+        if (isNaN(currentpage) || currentpage < 1) {
+          const currentpage = 1;
+          const param = request.query.platform;
+          const gamesAllData = await db.collection("games").find().toArray();
+          const gamesAll = await Promise.all(
+            gamesAllData.filter((game) => game.platform.name === param)
+          );
 
-      const games =  gamesAll.slice(((currentpage - 1 ) * 5), currentpage * 5)
-      response.render("listGamePerPlatforms", {
-        listPlatforms: await chargeNavBarPlatform(),
-        filteredArray: await chargeNavBarGenres(),
-        games, currentpage, param
-      });
-    }else {
-      const param = request.query.platform;
-      const gamesAllData = await db.collection("games").find().toArray();
-      const gamesAll = await Promise.all(
-        gamesAllData.filter((game) => game.platform.name === param)
-      );
-      const games =  gamesAll.slice(((currentpage - 1 ) * 5), currentpage * 5)
-      response.render("listGamePerPlatforms", {
-        listPlatforms: await chargeNavBarPlatform(),
-        filteredArray: await chargeNavBarGenres(),
-        games, currentpage, param
-      });
-    }
+          const games = gamesAll.slice((currentpage - 1) * 5, currentpage * 5);
+          response.render("listGamePerPlatforms", {
+            listPlatforms: await chargeNavBarPlatform(),
+            filteredArray: await chargeNavBarGenres(),
+            games,
+            currentpage,
+            param,
+          });
+        } else {
+          const param = request.query.platform;
+          const gamesAllData = await db.collection("games").find().toArray();
+          const gamesAll = await Promise.all(
+            gamesAllData.filter((game) => game.platform.name === param)
+          );
+          const games = gamesAll.slice((currentpage - 1) * 5, currentpage * 5);
+          response.render("listGamePerPlatforms", {
+            listPlatforms: await chargeNavBarPlatform(),
+            filteredArray: await chargeNavBarGenres(),
+            games,
+            currentpage,
+            param,
+          });
+        }
+      } else {
+        const currentpage = 1;
+        const param = request.query.platform;
+        const gamesAllData = await db.collection("games").find().toArray();
+        const gamesAll = await Promise.all(
+          gamesAllData.filter((game) => game.platform.name === param)
+        );
 
-  } else {
-    const currentpage = 1
-    const param = request.query.platform;
-      const gamesAllData = await db.collection("games").find().toArray();
-      const gamesAll = await Promise.all(
-        gamesAllData.filter((game) => game.platform.name === param)
-      );
-
-      const games =  gamesAll.slice(((currentpage - 1 ) * 5), currentpage * 5)
-      response.render("listGamePerPlatforms", {
-        listPlatforms: await chargeNavBarPlatform(),
-        filteredArray: await chargeNavBarGenres(),
-        games, currentpage, param
-      });
-  }
+        const games = gamesAll.slice((currentpage - 1) * 5, currentpage * 5);
+        response.render("listGamePerPlatforms", {
+          listPlatforms: await chargeNavBarPlatform(),
+          filteredArray: await chargeNavBarGenres(),
+          games,
+          currentpage,
+          param,
+        });
+      }
     }
   );
-
 
   //create root for games
   app.get("/games", async (request: Request, response: Response) => {
     const page = request.query.page;
-  if (typeof page === "string"){
-    const currentpage = parseInt(page)
-    if (isNaN(currentpage) || currentpage < 1){
-      const currentpage = 1
-      const gamesAll = await db.collection("games").find().toArray();
+    if (typeof page === "string") {
+      const currentpage = parseInt(page);
+      if (isNaN(currentpage) || currentpage < 1) {
+        const currentpage = 1;
+        const gamesAll = await db.collection("games").find().toArray();
 
-      const games =  gamesAll.slice(((currentpage - 1 ) * 5), currentpage * 5)
-    response.render("games", {
-      filteredArray: await chargeNavBarGenres(),
-      games,
-      listPlatforms: await chargeNavBarPlatform(), currentpage
-    });
-    }else {
-      const gamesAll = await db.collection("games").find().toArray();
+        const games = gamesAll.slice((currentpage - 1) * 5, currentpage * 5);
+        response.render("games", {
+          filteredArray: await chargeNavBarGenres(),
+          games,
+          listPlatforms: await chargeNavBarPlatform(),
+          currentpage,
+        });
+      } else {
+        const gamesAll = await db.collection("games").find().toArray();
 
-      const games =  gamesAll.slice(((currentpage - 1 ) * 5), currentpage * 5)
-    response.render("games", {
-      filteredArray: await chargeNavBarGenres(),
-      games,
-      listPlatforms: await chargeNavBarPlatform(), currentpage
-    });
+        const games = gamesAll.slice((currentpage - 1) * 5, currentpage * 5);
+        response.render("games", {
+          filteredArray: await chargeNavBarGenres(),
+          games,
+          listPlatforms: await chargeNavBarPlatform(),
+          currentpage,
+        });
+      }
+    } else {
+      const currentpage = 1;
+      const gamesAll = await db.collection("games").find().toArray();
+      const games = gamesAll.slice((currentpage - 1) * 5, currentpage * 5);
+      response.render("games", {
+        filteredArray: await chargeNavBarGenres(),
+        games,
+        listPlatforms: await chargeNavBarPlatform(),
+        currentpage,
+      });
     }
-  } else {
-    const currentpage = 1
-    const gamesAll = await db.collection("games").find().toArray();
-    const games =  gamesAll.slice(((currentpage - 1 ) * 5), currentpage * 5)
-    response.render("games", {
-      filteredArray: await chargeNavBarGenres(),
-      games,
-      listPlatforms: await chargeNavBarPlatform(), currentpage
-    });
-  }
   });
 
   //create root for games slug
@@ -213,49 +219,60 @@ export function makeApp(db: Db): core.Express {
     async (request: Request, response: Response) => {
       const param = request.query.genre;
       const page = request.query.page;
-      if (typeof page === "string"){
-        const currentpage = parseInt(page)
-        if (isNaN(currentpage) || currentpage < 1){
-          const currentpage = 1
+      if (typeof page === "string") {
+        const currentpage = parseInt(page);
+        if (isNaN(currentpage) || currentpage < 1) {
+          const currentpage = 1;
           const gamePerGenre = await db
-          .collection("games")
-          .find({ genres: param })
-          .toArray();
+            .collection("games")
+            .find({ genres: param })
+            .toArray();
 
-          const game =  gamePerGenre.slice(((currentpage - 1 ) * 5), currentpage * 5)
-        response.render("listGamePerGenres", {
-          filteredArray: await chargeNavBarGenres(),
-          arrayOfGamesPerGenre: game,
-          listPlatforms: await chargeNavBarPlatform(), currentpage, param
-        });
+          const game = gamePerGenre.slice(
+            (currentpage - 1) * 5,
+            currentpage * 5
+          );
+          response.render("listGamePerGenres", {
+            filteredArray: await chargeNavBarGenres(),
+            arrayOfGamesPerGenre: game,
+            listPlatforms: await chargeNavBarPlatform(),
+            currentpage,
+            param,
+          });
         } else {
           const gamePerGenre = await db
+            .collection("games")
+            .find({ genres: param })
+            .toArray();
+
+          const game = gamePerGenre.slice(
+            (currentpage - 1) * 5,
+            currentpage * 5
+          );
+          response.render("listGamePerGenres", {
+            filteredArray: await chargeNavBarGenres(),
+            arrayOfGamesPerGenre: game,
+            listPlatforms: await chargeNavBarPlatform(),
+            currentpage,
+            param,
+          });
+        }
+      } else {
+        const currentpage = 1;
+        const gamePerGenre = await db
           .collection("games")
           .find({ genres: param })
           .toArray();
 
+        const game = gamePerGenre.slice((currentpage - 1) * 5, currentpage * 5);
 
-          const game =  gamePerGenre.slice(((currentpage - 1 ) * 5), currentpage * 5)
         response.render("listGamePerGenres", {
           filteredArray: await chargeNavBarGenres(),
           arrayOfGamesPerGenre: game,
-          listPlatforms: await chargeNavBarPlatform(), currentpage, param
+          listPlatforms: await chargeNavBarPlatform(),
+          currentpage,
+          param,
         });
-        }
-      } else {
-        const currentpage = 1
-        const gamePerGenre = await db
-        .collection("games")
-        .find({ genres: param })
-        .toArray();
-
-        const game =  gamePerGenre.slice(((currentpage - 1 ) * 5), currentpage * 5)
-        console.log(game)
-      response.render("listGamePerGenres", {
-        filteredArray: await chargeNavBarGenres(),
-        arrayOfGamesPerGenre: game,
-        listPlatforms: await chargeNavBarPlatform(), currentpage, param
-      });
       }
     }
   );

@@ -5,14 +5,25 @@
 
   {% if games %}
     {% for game in games%}
-      <a href="/game/{{game._id}}">
-        <div>
-          <h3>{{game.name}}</h3>
-          <img src="{{game.cover.url}}"/>
-        </div>
-      </a>
+
+      <div class="card" style="width: 18rem;">
+  <img src="{{game.cover.url}}" class="card-img-top" alt="...">
+  <div class="card-body">
+    <h5 class="card-title">{{game.name}}</h5>
+
+    <a href="/game/{{game._id}}" class="btn btn-primary">Take a look</a>
+  </div>
+</div>
     {% endfor %}
+
   {% endif %}
+
+
+
+
+
+
+
   <button><a href="/games?page={{ currentpage - 1 }}">prev</a></button>
   <button><a href="/games?page={{ currentpage + 1 }}">next</a></button>
 {% endblock %}
