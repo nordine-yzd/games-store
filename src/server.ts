@@ -2,6 +2,8 @@ import express, { Request, Response } from "express";
 import * as core from "express-serve-static-core";
 import { Db, ObjectId } from "mongodb";
 import nunjucks from "nunjucks";
+import cookie from "cookie";
+import jose, { createRemoteJWKSet } from "jose";
 import fetch from "node-fetch";
 
 export function makeApp(db: Db): core.Express {
@@ -149,11 +151,30 @@ export function makeApp(db: Db): core.Express {
   );
 
   app.get("/login", async (request, response) => {
-    const url = `${process.env.AUTH0_DOMAIN}/authorize?response_type=token&client_id=${process.env.AUTH0_CLIENT_ID}&redirect_uri=${process.env.AUTH0_REDIRECTURI}`;
-    // console.log(
-    //   `${process.env.AUTH0_DOMAIN}/oauth/tokenContent-Type: application/x-www-form-urlencodedgrant_type=authorization_code&client_id=${process.env.AUTH0_CLIENT_ID}&client_secret=${process.env.AUTH0_CLIENT_SECRET}&code=AUTHORIZATION_CODE&redirect_uri=${process.env.AUTH0_REDIRECTURI}`
-    // );
+    const url = `${process.env.AUTH0_DOMAIN}/authorize?response_type=code&client_id=${process.env.AUTH0_CLIENT_ID}&redirect_uri=${process.env.AUTH0_REDIRECTURI}`;
     response.redirect(url);
+  });
+
+  app.get("/callback", async (request: Request, response: Response) => {
+    const param = request.query.code;
+
+    //get the tokken
+    const tokkenData = await fetch(
+      "https://dev-embtxmk2.us.auth0.com/oauth/token",
+      {
+        method: "POST",
+        headers: {
+          "content-type": "application/x-www-form-urlencoded",
+        },
+        body: `grant_type=authorization_code&client_id=bBw98jzJCrWx5qgKFM4TzJdNsUb18zOS&client_secret=uZ5C-KKDA9zS6numYs7VadVpn43NdNhsYkwkQKz8qKpGfpbMEClLAAyhk2RegTq4&code=${param}&redirect_uri=http://localhost:3000/callback`,
+      }
+    )
+      .then((element) => element.json())
+      .then((tokken) => tokken);
+
+    const tokkenAccess = tokkenData.access_token;
+    console.log(tokkenData);
+    response.redirect("/home");
   });
 
   app.get("/logout", async (request, response) => {
