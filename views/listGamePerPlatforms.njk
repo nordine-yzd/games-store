@@ -13,6 +13,8 @@
       </a>
     {% endfor %}
   {% endif %}
+  <button><a href="/listGamePerPlatforms?platform={{  param  }}&page={{ currentpage - 1 }}">prev</a></button>
+  <button><a href="/listGamePerPlatforms?platform={{  param  }}&page={{ currentpage + 1 }}">next</a></button>
 {% endblock %}
 
 {# {% if variable %}

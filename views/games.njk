@@ -3,8 +3,8 @@
 {% block top%}{% endblock %}
 {% block contenu%}
 
-  {% if gamesAll %}
-    {% for game in gamesAll%}
+  {% if game %}
+    {% for game in game%}
       <a href="/game/{{game._id}}">
         <div>
           <h3>{{game.name}}</h3>
@@ -13,4 +13,6 @@
       </a>
     {% endfor %}
   {% endif %}
+  <button><a href="/games?page={{ currentpage - 1 }}">prev</a></button>
+  <button><a href="/games?page={{ currentpage + 1 }}">next</a></button>
 {% endblock %}
