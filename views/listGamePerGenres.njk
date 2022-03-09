@@ -13,4 +13,6 @@
       </a>
     {% endfor %}
   {% endif %}
+  <button><a href="/listGamePerGenres?genre={{param}}&page={{ currentpage - 1 }}">prev</a></button>
+  <button><a href="/listGamePerGenres?genre={{param}}&page={{ currentpage + 1 }}">next</a></button>
 {% endblock %}
