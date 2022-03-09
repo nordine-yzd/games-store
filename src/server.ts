@@ -58,6 +58,20 @@ export function makeApp(db: Db): core.Express {
     return filteredArray;
   }
 
+  app.get("/AddGamesInToPanier", (request, response) => {
+    //
+    const param = request.query.gameSelect;
+
+    const favoriteColor = "blue";
+
+    response.setHeader(
+      "Set-Cookie",
+      cookie.serialize(favoriteColor, "coucou", {
+        maxAge: 3600,
+      })
+    );
+  });
+
   app.get("/home", async (request: Request, response: Response) => {
     response.render("home", {
       filteredArray: await chargeNavBarGenres(),
@@ -73,6 +87,21 @@ export function makeApp(db: Db): core.Express {
       listPlatforms,
       filteredArray: await chargeNavBarGenres(),
     });
+  });
+
+  app.get("/AddGamesInToPanier", (request, response) => {
+    //
+    const param = request.query.gameSelect;
+    response.setHeader(
+      "Set-Cookie",
+      cookie.serialize(`gameSelected${param}`, `${param}`, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV !== "development",
+        maxAge: 60 * 60,
+        sameSite: "strict",
+        path: "/",
+      })
+    );
   });
 
   //create root for platforms slug
@@ -145,6 +174,7 @@ export function makeApp(db: Db): core.Express {
     }
   });
 
+  //create cookie
   app.get("/callback", async (request: Request, response: Response) => {
     const param = request.query.code;
 
@@ -175,6 +205,7 @@ export function makeApp(db: Db): core.Express {
     response.redirect("/home");
   });
 
+  //deconnection & destroye cookie
   app.get("/logout", async (request, response) => {
     const url = `${process.env.AUTH0_DOMAIN}/v2/logout?client_id=${process.env.AUTH0_CLIENT_ID}&returnTo=http://localhost:3000`;
     response.setHeader(
