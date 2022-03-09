@@ -12,12 +12,20 @@
   <ul>
     <li id="nav-home-link"><a href="/home">Home</a></li>
     <li id="nav-game-link"><a href="/games">Game</a></li>
-    <li id="nav-platforms-link"><a href="/platforms">Platforms</a></li>
     <li id="nav-genres-link">
       <select name="genres" id="genres-select" onchange="location = this.value;">
         {% if filteredArray%}
           {% for genre in filteredArray %}
             <option value="/listGamePerGenres?genre={{genre}}">{{genre}}</option>
+          {% endfor %}
+        {% endif %}
+      </select>
+    </li>
+    <li id="nav-platforms-link">
+      <select name="platforms" id="platforms-select" onchange="location = this.value;">
+        {% if listPlatforms%}
+          {% for platform in listPlatforms %}
+            <option value="/listGamePerPlatforms?platform={{platform}}">{{platform}}</option>
           {% endfor %}
         {% endif %}
       </select>
