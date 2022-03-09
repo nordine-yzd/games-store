@@ -4,26 +4,21 @@
 {% block contenu%}
 
   {% if games %}
-    {% for game in games%}
-
-      <div class="card" style="width: 18rem;">
-  <img src="{{game.cover.url}}" class="card-img-top" alt="...">
-  <div class="card-body">
-    <h5 class="card-title">{{game.name}}</h5>
-
-    <a href="/game/{{game._id}}" class="btn btn-primary">Take a look</a>
+  <div class="container" style="height: 25rem;">
+    <div class="row">
+      {% for game in games%}
+    <div class="col">
+        <div class="card" style="width: 15rem;">
+    <img src="{{game.cover.url}}" class="card-img-top" alt="...">
+    <div class="card-body">
+      <h5 class="card-title">{{game.name}}</h5>
+    </div>
+      <a href="/game/{{game._id}}" class="btn btn-primary">Take a look</a>
+    </div>
   </div>
-</div>
     {% endfor %}
-
   {% endif %}
+  <a href="/games?page={{ currentpage - 1 }}"><button type="button" class="btn btn-secondary btn-lg">Previous</button></a>
+  <a href="/games?page={{ currentpage + 1 }}"><button type="button" class="btn btn-secondary btn-lg">Next</button></a>
 
-
-
-
-
-
-
-  <button><a href="/games?page={{ currentpage - 1 }}">prev</a></button>
-  <button><a href="/games?page={{ currentpage + 1 }}">next</a></button>
 {% endblock %}

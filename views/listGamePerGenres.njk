@@ -4,15 +4,20 @@
 {% block contenu%}
 
   {% if arrayOfGamesPerGenre %}
-    {% for game in arrayOfGamesPerGenre %}
-      <a href="/game/{{game._id}}">
-        <div>
-          <h3>{{game.name}}</h3>
-          <img src="{{game.cover.url}}"/>
-        </div>
-      </a>
+    <div class="row">
+      {% for game in arrayOfGamesPerGenre %}
+    <div class="col">
+        <div class="card" style="width: 15rem;">
+    <img src="{{game.cover.url}}" class="card-img-top" alt="...">
+    <div class="card-body">
+      <h5 class="card-title">{{game.name}}</h5>
+    </div>
+      <a href="/game/{{game._id}}" class="btn btn-primary">Take a look</a>
+    </div>
+  </div>
     {% endfor %}
   {% endif %}
-  <button><a href="/listGamePerGenres?genre={{param}}&page={{ currentpage - 1 }}">prev</a></button>
-  <button><a href="/listGamePerGenres?genre={{param}}&page={{ currentpage + 1 }}">next</a></button>
+  <a href="/listGamePerGenres?genre={{param}}&page={{ currentpage - 1 }}"><button type="button" class="btn btn-secondary btn-lg">Previous</button></a>
+  <a href="/listGamePerGenres?genre={{param}}&page={{ currentpage + 1 }}"><button type="button" class="btn btn-secondary btn-lg">Next</button></a>
+
 {% endblock %}

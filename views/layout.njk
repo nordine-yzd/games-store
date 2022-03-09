@@ -55,13 +55,17 @@
              {% for genre in filteredArray %}
             <li><a class="dropdown-item" href="/listGamePerGenres?genre={{genre}}">{{genre}}</a></li>
           {% endfor %}
-
           </ul>
         </li>
       </ul>
+      <form class="form-inline my-2 my-lg-0">
+      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+    </form>
     </div>
   </div>
 </nav>
+
   {% block top%}{% endblock %}
   {% block contenu%}{% endblock %}
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
