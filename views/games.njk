@@ -3,8 +3,8 @@
 {% block top%}{% endblock %}
 {% block contenu%}
 
-  {% if game %}
-    {% for game in game%}
+  {% if games %}
+    {% for game in games%}
       <a href="/game/{{game._id}}">
         <div>
           <h3>{{game.name}}</h3>
