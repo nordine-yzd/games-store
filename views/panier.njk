@@ -1,0 +1,14 @@
+{% extends "layout.njk" %}
+
+{% block top%}{% endblock %}
+{% block contenu%}
+{% if arrayGameSelected %}
+    {% for game in arrayGameSelected %}
+        <div>
+          <h3>{{game.name}}</h3>
+          <img src="{{game.cover.url}}"/>
+          <a href="/deleteGamesInToPanier?gameSelect={{game._id}}">Delete</a>
+        </div>
+    {% endfor %}
+  {% endif %}
+{% endblock %}

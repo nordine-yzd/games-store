@@ -58,20 +58,43 @@ export function makeApp(db: Db): core.Express {
     return filteredArray;
   }
 
-  app.get("/AddGamesInToPanier", (request, response) => {
-    //
+  app.get("/AddGamesInToPanier", async (request, response) => {
     const param = request.query.gameSelect;
-
-    const favoriteColor = "blue";
 
     response.setHeader(
       "Set-Cookie",
-      cookie.serialize(favoriteColor, "coucou", {
-        maxAge: 3600,
+      cookie.serialize(`gameSelected${param}`, `${param}`, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV !== "development",
+        maxAge: 60 * 60,
+        sameSite: "strict",
+        path: "/",
       })
     );
+    response.render("gameDetails", {
+      filteredArray: await chargeNavBarGenres(),
+      listPlatforms: await chargeNavBarPlatform(),
+    });
   });
 
+  app.get("/deleteGamesInToPanier", async (request, response) => {
+    const param = request.query.gameSelect;
+    const cookies = cookie.parse(request.get("cookie") || "");
+
+    const arrayOfCookies: string[] = [];
+    for (const cookie in cookies) {
+      if (cookie !== "token" && cookies[cookie] === param) {
+        arrayOfCookies.push(cookie);
+      }
+    }
+    response.setHeader(
+      "Set-Cookie",
+      cookie.serialize(`${arrayOfCookies[0]}`, "", {
+        maxAge: 0,
+      })
+    );
+    response.redirect("/panier");
+  });
   app.get("/home", async (request: Request, response: Response) => {
     response.render("home", {
       filteredArray: await chargeNavBarGenres(),
@@ -89,9 +112,35 @@ export function makeApp(db: Db): core.Express {
     });
   });
 
-  app.get("/AddGamesInToPanier", (request, response) => {
-    //
+  app.get("/panier", async (request: Request, response: Response) => {
+    const cookies = cookie.parse(request.get("cookie") || "");
+
+    const arrayOfCookies: string[] = [];
+    for (const cookie in cookies) {
+      if (cookie !== "token") {
+        arrayOfCookies.push(`${cookies[cookie]}`);
+      }
+    }
+
+    //call to the db for get games
+    const arrayGameSelected = [];
+    for (let i = 0; i < arrayOfCookies.length; i++) {
+      const idFormat = new ObjectId(arrayOfCookies[i]);
+      const test = await db.collection("games").findOne({ _id: idFormat });
+      arrayGameSelected.push(test);
+    }
+
+    response.render("panier", {
+      filteredArray: await chargeNavBarGenres(),
+      listPlatforms: await chargeNavBarPlatform(),
+      arrayGameSelected,
+    });
+  });
+
+  app.get("/AddGamesInToPanier", async (request, response) => {
     const param = request.query.gameSelect;
+    const cookies = cookie.parse(request.get("cookie") || "");
+
     response.setHeader(
       "Set-Cookie",
       cookie.serialize(`gameSelected${param}`, `${param}`, {
@@ -102,6 +151,10 @@ export function makeApp(db: Db): core.Express {
         path: "/",
       })
     );
+    response.render("gameDetails", {
+      filteredArray: await chargeNavBarGenres(),
+      listPlatforms: await chargeNavBarPlatform(),
+    });
   });
 
   //create root for platforms slug
