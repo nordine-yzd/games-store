@@ -3,7 +3,6 @@ import * as core from "express-serve-static-core";
 import { Db, ObjectId } from "mongodb";
 import nunjucks from "nunjucks";
 import cookie from "cookie";
-import jose, { createRemoteJWKSet } from "jose";
 import fetch from "node-fetch";
 
 export function makeApp(db: Db): core.Express {
@@ -137,8 +136,13 @@ export function makeApp(db: Db): core.Express {
   );
 
   app.get("/login", async (request, response) => {
-    const url = `${process.env.AUTH0_DOMAIN}/authorize?response_type=code&client_id=${process.env.AUTH0_CLIENT_ID}&redirect_uri=${process.env.AUTH0_REDIRECTURI}`;
-    response.redirect(url);
+    const cookies = cookie.parse(request.get("cookie") || "");
+    if (cookies.token === undefined) {
+      const url = `${process.env.AUTH0_DOMAIN}/authorize?audience=${process.env.AUTH0_AUDIENCE}&response_type=code&client_id=${process.env.AUTH0_CLIENT_ID}&redirect_uri=${process.env.AUTH0_REDIRECTURI}`;
+      response.redirect(url);
+    } else {
+      response.redirect("/home");
+    }
   });
 
   app.get("/callback", async (request: Request, response: Response) => {
@@ -158,12 +162,27 @@ export function makeApp(db: Db): core.Express {
       .then((element) => element.json())
       .then((tokken) => tokken);
 
-    const tokkenAccess = tokkenData.access_token;
+    response.setHeader(
+      "Set-Cookie",
+      cookie.serialize("token", tokkenData.access_token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV !== "development",
+        maxAge: 60 * 60,
+        sameSite: "strict",
+        path: "/",
+      })
+    );
     response.redirect("/home");
   });
 
   app.get("/logout", async (request, response) => {
     const url = `${process.env.AUTH0_DOMAIN}/v2/logout?client_id=${process.env.AUTH0_CLIENT_ID}&returnTo=http://localhost:3000`;
+    response.setHeader(
+      "Set-Cookie",
+      cookie.serialize("token", "", {
+        maxAge: 0,
+      })
+    );
     response.redirect(url);
   });
 
