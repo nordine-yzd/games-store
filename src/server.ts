@@ -8,8 +8,6 @@ import fetch from "node-fetch";
 export function makeApp(db: Db): core.Express {
   const app = express();
 
-  app.use(express.static("public"));
-
   nunjucks.configure("views", {
     autoescape: true,
     express: app,
