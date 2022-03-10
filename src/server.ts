@@ -8,13 +8,12 @@ import fetch from "node-fetch";
 export function makeApp(db: Db): core.Express {
   const app = express();
 
-  app.use(express.static("public"));
-
   nunjucks.configure("views", {
     autoescape: true,
     express: app,
   });
   app.set("view engine", "njk");
+  app.use(express.static("public"));
 
   app.get("/", (request: Request, response: Response) => {
     response.render("index");
