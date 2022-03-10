@@ -11,16 +11,22 @@
         <div class="row">
           <div class="col" >
             {# 1 of 2 #}
-              <img src="{{game.cover.url}}" class="shadow-lg p-3 mb-5 bg-body rounded"/>
+              {% if game.cover.url %}
+                 <img src="{{game.cover.url}}" class="shadow-lg p-3 mb-5 bg-body rounded" alt="...">
+              {% else %}
+                <img src="https://images.assetsdelivery.com/compings_v2/novitskiy1980/novitskiy19801711/novitskiy1980171100035.jpg" class="card-img-top imgGame" alt="...">
+              {% endif %}
           </div>
           <div class="col" >
             {# 2 of 2 #}
             <h3>{{game.name}}</h3><br>
             <p>{{game.summary}}</p>
           </div>
-            <button type="button" class="btn btn-lg btn-danger" data-bs-toggle="popover" title="Popover title" data-bs-content="And here's some amazing content. It's very engaging. Right?">
-              Add to Basket
-            </button>
+            <a href="/AddGamesInToPanier?gameSelect={{game._id}}">
+              <button type="button" class="btn btn-lg btn-danger" data-bs-toggle="popover" title="Popover title" data-bs-content="And here's some amazing content. It's very engaging. Right?">
+                Add to Basket
+              </button>
+            </a>
         </div><br><br>
 
           {# deuxieme partie platform  #}
