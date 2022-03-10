@@ -16,7 +16,7 @@ export function makeApp(db: Db): core.Express {
   app.use(express.static("public"));
 
   app.get("/", (request: Request, response: Response) => {
-    response.render("index");
+    response.redirect("/home");
   });
 
   //we do use this function on all route for charge select genres
