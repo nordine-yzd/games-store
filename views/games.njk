@@ -18,7 +18,12 @@
   </div>
     {% endfor %}
   {% endif %}
-  <a href="/games?page={{ currentpage - 1 }}"><button type="button" class="btn btn-secondary btn-lg">Previous</button></a>
-  <a href="/games?page={{ currentpage + 1 }}"><button type="button" class="btn btn-secondary btn-lg">Next</button></a>
 
+    {% if currentpage >= 2 %}
+  <a href="/games?page={{ currentpage - 1 }}"><button type="button" class="btn btn-secondary btn-lg">Previous</button></a>
+    {% endif %}
+
+    {% if currentpage < numberpages %}
+  <a href="/games?page={{ currentpage + 1 }}"><button type="button" class="btn btn-secondary btn-lg">Next</button></a>
+    {% endif %}
 {% endblock %}
