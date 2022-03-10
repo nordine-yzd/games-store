@@ -452,7 +452,7 @@ export function makeApp(db: Db): core.Express {
 
   //deconnection & destroye cookie
   app.get("/logout", async (request, response) => {
-    const url = `${process.env.AUTH0_DOMAIN}/v2/logout?client_id=${process.env.AUTH0_CLIENT_ID}&returnTo=http://localhost:3000/home`;
+    const url = `${process.env.AUTH0_DOMAIN}/v2/logout?client_id=${process.env.AUTH0_CLIENT_ID}&returnTo=${process.env.AUTH0_REDIRECTURILOGOUT}`;
     const cookies = cookie.parse(request.get("cookie") || "");
 
     for (const cookie in cookies) {
