@@ -4,11 +4,48 @@
 {% block contenu%}
 {% if arrayGameSelected %}
     {% for game in arrayGameSelected %}
-        <div>
-          <h3>{{game.name}}</h3>
-          <img src="{{game.cover.url}}"/>
-          <a href="/deleteGamesInToPanier?gameSelect={{game._id}}">Delete</a>
-        </div>
+<div class="card" id="details" class="border-bottom" class="shadow-lg p-3 mb-5 bg-body rounded"  ><br>
+  <div class="container" id="imgDetails" class="shadow-lg p-3 mb-5 bg-body rounded"  >
+    <div class="row" >
+      <div class="col" >
+        <div class="shadow-lg p-3 mb-5 bg-body rounded" class="p-2 bg-light border">
+           <div class="card-header"class="shadow-lg p-3 mb-5 bg-body rounded">
+              <h1 >{{game.name}}  </h1>
+               <img src="{{game.cover.url}}"class="card-img-top imgGame"/>
+                 <h5 class="card-title">{{game.summary}}</h5>
+             <div class="card-body">
+           </div>
+         </div>
+                 <a href="/deleteGamesInToPanier?gameSelect={{game._id}}" class="btn btn-primary">Delete</a>
+         </div>
+      </div>
+     </div>
+  </div>
+</div>
     {% endfor %}
   {% endif %}
 {% endblock %}
+
+    //<div class="container" id="details" class="shadow-lg p-3 mb-5 bg-body rounded" ><br>
+      <div class="container" id="imgDetails" class="shadow-lg p-3 mb-5 bg-body rounded">
+        <div class="row" >
+          <div class="col" >
+            {# 1 of 2 #}
+            {% if game.cover.url %}
+              <img src="{{game.cover.url}}" class="shadow-lg p-3 mb-5 bg-body rounded" alt="...">
+            {% else %}
+              <img src="https://images.assetsdelivery.com/compings_v2/novitskiy1980/novitskiy19801711/novitskiy1980171100035.jpg" class="card-img-top imgGame" alt="...">
+            {% endif %}
+          </div>
+          <div class="col" >
+            {# 2 of 2 #}
+            <h1>{{game.name}}</h1>
+            <a href="/AddGamesInToPanier?gameSelect={{game._id}}">
+              <button type="button" class="btn btn-lg btn-danger" data-bs-toggle="popover" title="Success" data-bs-content="{{game.name}} add to your basket!">
+                Add to Basket
+              </button>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
