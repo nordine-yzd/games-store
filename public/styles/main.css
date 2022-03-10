@@ -4,5 +4,10 @@
 }
 
 #blanc {
-  background-color: white;
+  background-color: rgb(254, 254, 254);
 }
+.imgGame{
+  width: 238px;
+  height: 302px;
+}
+
