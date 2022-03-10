@@ -3,23 +3,27 @@
 {% block top%}{% endblock %}
 {% block contenu%}
   {% if game %}
-    <div class="container" id="details">
-    <!-- Content here -->
-    <h3>Hello worlsddd</h3>
-    </div>
 
-    <div>
-      <h3>{{game.name}}</h3>
-      <img src="{{game.cover.url}}"/>
+    <div class="container" id="details" class="shadow-lg p-3 mb-5 bg-body rounded" ><br>
+      <div class="container" id="imgDetails" class="shadow-lg p-3 mb-5 bg-body rounded">
+        <div class="row" >
+          <div class="col" >
+            {# 1 of 2 #}
+              <img src="{{game.cover.url}}" class="shadow-lg p-3 mb-5 bg-body rounded"/>
+          </div>
+          <div class="col" >
+            {# 2 of 2 #}
+            <h1>{{game.name}}</h1>
+            <button type="button" class="btn btn-lg btn-danger" data-bs-toggle="popover" title="Popover title" data-bs-content="And here's some amazing content. It's very engaging. Right?">
+              Add to Basket
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
-    <a href="/AddGamesInToPanier?gameSelect={{game._id}}">
-    <button type="button">
-    Add to panier
-    </button>
-    </a>
 
     {% if addPanierValidate %}
-      <p>{{game.name}} ajouter au panier avec succès !</p>
+      <p align="center">{{game.name}} ajouter au panier avec succès !</p>
     {% endif %}
 
   {% endif %}
