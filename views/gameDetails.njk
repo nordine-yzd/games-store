@@ -14,13 +14,26 @@
           <div class="fs-5 mb-5">
           </div>
           <p class="lead">{{game.summary}}</p>
+          {% if paramPrice %}
+            <p>Price :{{paramPrice}}$</p><br>
+          {% else %}
+            <p>Price :{{price}}$</p><br>
+          {% endif %}
           <div class="d-flex">
             {# <input class="form-control text-center me-3" id="inputQuantity" type="num" value="1" style="max-width: 3rem" /> #}
-            <a href="/AddGamesInToPanier?gameSelect={{game._id}}">
-              <button type="button" class="btn btn-lg btn-danger" data-bs-toggle="popover" title="Popover title" data-bs-content="add to Basket with success!">
-                Add to Basket
-              </button>
-            </a>
+            {% if paramPrice %}
+                <a href="/AddGamesInToPanier?gameSelect={{game._id}}&price={{paramPrice}}">
+                <button type="button" class="btn btn-lg btn-danger" data-bs-toggle="popover" title="Popover title" data-bs-content="add to Basket with success!">
+                  Add to Basket
+                </button>
+                </a>
+            {% else %}
+              <a href="/AddGamesInToPanier?gameSelect={{game._id}}&price={{price}}">
+                <button type="button" class="btn btn-lg btn-danger" data-bs-toggle="popover" title="Popover title" data-bs-content="add to Basket with success!">
+                  Add to Basket
+                </button>
+              </a>
+            {% endif %}
           </div>
       </div>
     </div>
@@ -49,7 +62,7 @@
     </div>
     <!-- Product actions-->
     <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-      <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="/AddGamesInToPanier?gameSelect={{game._id}}">View options</a></div>
+      <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="/game/{{game._id}}">View options</a></div>
     </div>
   </div>
 </div>
@@ -67,7 +80,7 @@
     </div>
     <!-- Product actions-->
     <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-      <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="/AddGamesInToPanier?gameSelect={{game._id}}">View options</a></div>
+      <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="/game/{{game._id}}">View options</a></div>
     </div>
   </div>
 </div>
