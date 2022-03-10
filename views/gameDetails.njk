@@ -23,13 +23,13 @@
             {# <input class="form-control text-center me-3" id="inputQuantity" type="num" value="1" style="max-width: 3rem" /> #}
             {% if paramPrice %}
                 <a href="/AddGamesInToPanier?gameSelect={{game._id}}&price={{paramPrice}}">
-                <button type="button" class="btn btn-lg btn-danger" data-bs-toggle="popover" title="Popover title" data-bs-content="add to Basket with success!">
+                <button type="button" class="btn btn-lg btn-danger" data-bs-toggle="popover" title="Add to basket" data-bs-content="add to Basket with success!">
                   Add to Basket
                 </button>
                 </a>
             {% else %}
               <a href="/AddGamesInToPanier?gameSelect={{game._id}}&price={{price}}">
-                <button type="button" class="btn btn-lg btn-danger" data-bs-toggle="popover" title="Popover title" data-bs-content="add to Basket with success!">
+                <button type="button" class="btn btn-lg btn-danger" data-bs-toggle="popover" title="Add to basket" data-bs-content="add to Basket with success!">
                   Add to Basket
                 </button>
               </a>

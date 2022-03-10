@@ -197,13 +197,12 @@ export function makeApp(db: Db): core.Express {
         });
         totalOfPrice += parseFloat(arrayOfCookies[i].split("?")[1]);
       }
-
       response.render("panier", {
         filteredArray: await chargeNavBarGenres(),
         listPlatforms: await chargeNavBarPlatform(),
         arrayGameSelected,
         accesPanier,
-        totalOfPrice,
+        totalOfPrice: totalOfPrice.toFixed(2),
       });
     } else {
       response.redirect("/home");
