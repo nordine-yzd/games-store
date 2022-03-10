@@ -58,9 +58,12 @@ export function makeApp(db: Db): core.Express {
     return filteredArray;
   }
 
+  //root for add game at panier
   app.get("/AddGamesInToPanier", async (request, response) => {
     const param = request.query.gameSelect;
-    console.log(request.headers.referer);
+    const cookies = cookie.parse(request.get("cookie") || "");
+    const accesPanier = await valideTokkenId(cookies.token);
+
     response.setHeader(
       "Set-Cookie",
       cookie.serialize(`gameSelected${param}`, `${param}`, {
@@ -79,12 +82,15 @@ export function makeApp(db: Db): core.Express {
       listPlatforms: await chargeNavBarPlatform(),
       game,
       addPanierValidate: true,
+      accesPanier,
     });
   });
 
+  //root for delete game at panier
   app.get("/deleteGamesInToPanier", async (request, response) => {
     const param = request.query.gameSelect;
     const cookies = cookie.parse(request.get("cookie") || "");
+    const accesPanier = await valideTokkenId(cookies.token);
 
     const arrayOfCookies: string[] = [];
     for (const cookie in cookies) {
@@ -101,24 +107,63 @@ export function makeApp(db: Db): core.Express {
     response.redirect("/panier");
   });
   app.get("/home", async (request: Request, response: Response) => {
+    const cookies = cookie.parse(request.get("cookie") || "");
+    const accesPanier = await valideTokkenId(cookies.token);
     response.render("home", {
       filteredArray: await chargeNavBarGenres(),
       listPlatforms: await chargeNavBarPlatform(),
+      accesPanier,
     });
   });
 
   //create root for platforms
   app.get("/platforms", async (request: Request, response: Response) => {
     const listPlatforms = await chargeNavBarPlatform();
-
+    const cookies = cookie.parse(request.get("cookie") || "");
+    const accesPanier = await valideTokkenId(cookies.token);
     response.render("platforms", {
       listPlatforms,
       filteredArray: await chargeNavBarGenres(),
+      accesPanier,
     });
   });
 
+  //root for found game into navbar
+  const formParser = express.urlencoded({ extended: true });
+  app.post("/foundGame", formParser, async (request, response) => {
+    const search = request.body.gameFound;
+    const cookies = cookie.parse(request.get("cookie") || "");
+    const accesPanier = await valideTokkenId(cookies.token);
+
+    const searchFormat = search
+      .replaceAll("!", "")
+      .replaceAll(":", "")
+      .replaceAll("&", "")
+      .replaceAll(".", "")
+      .replaceAll("'", "")
+      .replaceAll("  ", " ")
+      .replaceAll(" ", "-");
+
+    const game = await db
+      .collection("games")
+      .findOne({ slug: searchFormat.toLowerCase() });
+
+    if (game !== null) {
+      response.render("gameDetails", {
+        filteredArray: await chargeNavBarGenres(),
+        listPlatforms: await chargeNavBarPlatform(),
+        game,
+        accesPanier,
+      });
+    } else {
+      response.redirect(`${request.headers.referer}`);
+    }
+  });
+
+  //root for load all cookie games in panier page
   app.get("/panier", async (request: Request, response: Response) => {
     const cookies = cookie.parse(request.get("cookie") || "");
+    const accesPanier = await valideTokkenId(cookies.token);
 
     const arrayOfCookies: string[] = [];
     for (const cookie in cookies) {
@@ -139,6 +184,7 @@ export function makeApp(db: Db): core.Express {
       filteredArray: await chargeNavBarGenres(),
       listPlatforms: await chargeNavBarPlatform(),
       arrayGameSelected,
+      accesPanier,
     });
   });
 
@@ -147,6 +193,9 @@ export function makeApp(db: Db): core.Express {
     "/listGamePerPlatforms",
     async (request: Request, response: Response) => {
       const page = request.query.page;
+      const cookies = cookie.parse(request.get("cookie") || "");
+      const accesPanier = await valideTokkenId(cookies.token);
+
       if (typeof page === "string") {
         const currentpage = parseInt(page);
         if (isNaN(currentpage) || currentpage < 1) {
@@ -164,6 +213,7 @@ export function makeApp(db: Db): core.Express {
             games,
             currentpage,
             param,
+            accesPanier,
           });
         } else {
           const param = request.query.platform;
@@ -178,6 +228,7 @@ export function makeApp(db: Db): core.Express {
             games,
             currentpage,
             param,
+            accesPanier,
           });
         }
       } else {
@@ -195,6 +246,7 @@ export function makeApp(db: Db): core.Express {
           games,
           currentpage,
           param,
+          accesPanier,
         });
       }
     }
@@ -203,6 +255,9 @@ export function makeApp(db: Db): core.Express {
   //create root for games
   app.get("/games", async (request: Request, response: Response) => {
     const page = request.query.page;
+    const cookies = cookie.parse(request.get("cookie") || "");
+    const accesPanier = await valideTokkenId(cookies.token);
+
     if (typeof page === "string") {
       const currentpage = parseInt(page);
       if (isNaN(currentpage) || currentpage < 1) {
@@ -215,6 +270,7 @@ export function makeApp(db: Db): core.Express {
           games,
           listPlatforms: await chargeNavBarPlatform(),
           currentpage,
+          accesPanier,
         });
       } else {
         const gamesAll = await db.collection("games").find().toArray();
@@ -225,6 +281,7 @@ export function makeApp(db: Db): core.Express {
           games,
           listPlatforms: await chargeNavBarPlatform(),
           currentpage,
+          accesPanier,
         });
       }
     } else {
@@ -236,6 +293,7 @@ export function makeApp(db: Db): core.Express {
         games,
         listPlatforms: await chargeNavBarPlatform(),
         currentpage,
+        accesPanier,
       });
     }
   });
@@ -243,11 +301,15 @@ export function makeApp(db: Db): core.Express {
   //create root for games slug
   app.get("/game/:idGame", async (request: Request, response: Response) => {
     const idGameSelected = new ObjectId(request.params.idGame);
+    const cookies = cookie.parse(request.get("cookie") || "");
+    const accesPanier = await valideTokkenId(cookies.token);
+
     const game = await db.collection("games").findOne({ _id: idGameSelected });
     response.render("gameDetails", {
       filteredArray: await chargeNavBarGenres(),
       listPlatforms: await chargeNavBarPlatform(),
       game,
+      accesPanier,
     });
   });
 
@@ -257,6 +319,9 @@ export function makeApp(db: Db): core.Express {
     async (request: Request, response: Response) => {
       const param = request.query.genre;
       const page = request.query.page;
+      const cookies = cookie.parse(request.get("cookie") || "");
+      const accesPanier = await valideTokkenId(cookies.token);
+
       if (typeof page === "string") {
         const currentpage = parseInt(page);
         if (isNaN(currentpage) || currentpage < 1) {
@@ -276,6 +341,7 @@ export function makeApp(db: Db): core.Express {
             listPlatforms: await chargeNavBarPlatform(),
             currentpage,
             param,
+            accesPanier,
           });
         } else {
           const gamePerGenre = await db
@@ -293,6 +359,7 @@ export function makeApp(db: Db): core.Express {
             listPlatforms: await chargeNavBarPlatform(),
             currentpage,
             param,
+            accesPanier,
           });
         }
       } else {
@@ -310,6 +377,7 @@ export function makeApp(db: Db): core.Express {
           listPlatforms: await chargeNavBarPlatform(),
           currentpage,
           param,
+          accesPanier,
         });
       }
     }
@@ -318,12 +386,28 @@ export function makeApp(db: Db): core.Express {
   app.get("/login", async (request, response) => {
     const cookies = cookie.parse(request.get("cookie") || "");
     if (cookies.token === undefined) {
-      const url = `${process.env.AUTH0_DOMAIN}/authorize?audience=${process.env.AUTH0_AUDIENCE}&response_type=code&client_id=${process.env.AUTH0_CLIENT_ID}&redirect_uri=${process.env.AUTH0_REDIRECTURI}`;
+      const url = `${process.env.AUTH0_DOMAIN}/authorize?client_id=${process.env.AUTH0_CLIENT_ID}&response_type=code&redirect_uri=${process.env.AUTH0_REDIRECTURI}&audience=${process.env.AUTH0_AUDIENCE}&scope=${process.env.AUTH0_SCOPES}`;
       response.redirect(url);
     } else {
       response.redirect("/home");
     }
   });
+
+  async function valideTokkenId(tokken: string) {
+    const tokkenData = await fetch(
+      "https://dev-embtxmk2.us.auth0.com/userinfo",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${tokken}`,
+        },
+      }
+    )
+      .then((element) => element.json())
+      .then((infos) => true)
+      .catch((error) => false);
+    return tokkenData;
+  }
 
   //create cookie
   app.get("/callback", async (request: Request, response: Response) => {
