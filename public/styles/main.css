@@ -6,8 +6,13 @@
 #blanc {
   background-color: rgb(254, 254, 254);
 }
-.imgGame{
+.imgGame {
   width: 238px;
   height: 302px;
 }
 
+.bg-image {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}

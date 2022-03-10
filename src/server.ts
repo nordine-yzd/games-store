@@ -64,6 +64,13 @@ export function makeApp(db: Db): core.Express {
     const param = request.query.gameSelect;
     const cookies = cookie.parse(request.get("cookie") || "");
     const accesPanier = await valideTokkenId(cookies.token);
+    const gamesAll = await db.collection("games").find().toArray();
+    const relatedGames: any[] = [];
+
+    for (let i = 0; i < 4; i++) {
+      const random = Math.floor(Math.random() * 100 + 1);
+      relatedGames.push(gamesAll[random]);
+    }
 
     response.setHeader(
       "Set-Cookie",
@@ -84,6 +91,7 @@ export function makeApp(db: Db): core.Express {
       game,
       addPanierValidate: true,
       accesPanier,
+      relatedGames,
     });
   });
 
@@ -315,6 +323,14 @@ export function makeApp(db: Db): core.Express {
     const idGameSelected = new ObjectId(request.params.idGame);
     const cookies = cookie.parse(request.get("cookie") || "");
     const accesPanier = await valideTokkenId(cookies.token);
+    const gamesAll = await db.collection("games").find().toArray();
+    const relatedGames: any[] = [];
+
+    for (let i = 0; i < 4; i++) {
+      const random = Math.floor(Math.random() * 100 + 1);
+      relatedGames.push(gamesAll[random]);
+    }
+    console.log(relatedGames);
 
     const game = await db.collection("games").findOne({ _id: idGameSelected });
     response.render("gameDetails", {
@@ -322,6 +338,7 @@ export function makeApp(db: Db): core.Express {
       listPlatforms: await chargeNavBarPlatform(),
       game,
       accesPanier,
+      relatedGames,
     });
   });
 
