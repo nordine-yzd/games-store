@@ -34,7 +34,9 @@
           <a class="nav-link" href="/games">Games</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/login">Login</a>
+          {% if accesPanier != true %}
+            <a class="nav-link" href="/login">Login</a>
+          {% endif %}
         </li>
         {% if accesPanier == true %}
            <a class="nav-link" href="/logout">Logout</a>
