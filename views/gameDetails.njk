@@ -8,16 +8,10 @@
       <div class="container" id="imgDetails" class="shadow-lg p-3 mb-5 bg-body rounded">
 
         {# premiere partie game titre #}
-
         <div class="row">
           <h3>Resume</h3><br>
 
           <div class="col" >
-            {% for game in game.genres%}
-
-  <h5>{{game.platform}}</h5>
-
-{% endfor %}
             {# 1 of 2 #}
               {% if game.cover.url %}
                  <img src="{{game.cover.url}}" class="shadow-lg p-3 mb-5 bg-body rounded" alt="...">
@@ -56,7 +50,7 @@
             <h3>Genres</h3><br>
             <div class="col" >
               {# 1 of 2 #}
-              <img src="{{game.platform.platform_logo_url}}" class="shadow-lg p-3 mb-5 bg-body rounded"/>
+              <a href="https://www.flaticon.com/free-icons/game-development" title="game development icons">Game development icons created by juicy_fish - Flaticon</a>
             </div>
             <div class="col" >
                 {# 2 of 2 #}
@@ -75,3 +69,8 @@
 {% endblock %}
 
 
+{% for game in game.genres%}
+
+<h5>{{game.platform}}</h5>
+
+{% endfor %}
