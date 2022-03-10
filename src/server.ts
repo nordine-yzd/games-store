@@ -8,6 +8,8 @@ import fetch from "node-fetch";
 export function makeApp(db: Db): core.Express {
   const app = express();
 
+  app.use(express.static("public"));
+
   nunjucks.configure("views", {
     autoescape: true,
     express: app,
@@ -208,7 +210,7 @@ export function makeApp(db: Db): core.Express {
           const gamesAll = await Promise.all(
             gamesAllData.filter((game) => game.platform.name === param)
           );
-          const numberpages = Math.round(gamesAll.length/4)
+          const numberpages = Math.round(gamesAll.length / 4);
           const games = gamesAll.slice((currentpage - 1) * 4, currentpage * 4);
           response.render("listGamePerPlatforms", {
             listPlatforms: await chargeNavBarPlatform(),
@@ -225,7 +227,7 @@ export function makeApp(db: Db): core.Express {
           const gamesAll = await Promise.all(
             gamesAllData.filter((game) => game.platform.name === param)
           );
-          const numberpages = Math.round(gamesAll.length/4)
+          const numberpages = Math.round(gamesAll.length / 4);
           const games = gamesAll.slice((currentpage - 1) * 4, currentpage * 4);
           response.render("listGamePerPlatforms", {
             listPlatforms: await chargeNavBarPlatform(),
@@ -244,7 +246,7 @@ export function makeApp(db: Db): core.Express {
         const gamesAll = await Promise.all(
           gamesAllData.filter((game) => game.platform.name === param)
         );
-        const numberpages = Math.round(gamesAll.length/4)
+        const numberpages = Math.round(gamesAll.length / 4);
         const games = gamesAll.slice((currentpage - 1) * 4, currentpage * 4);
         response.render("listGamePerPlatforms", {
           listPlatforms: await chargeNavBarPlatform(),
@@ -270,7 +272,7 @@ export function makeApp(db: Db): core.Express {
       if (isNaN(currentpage) || currentpage < 1) {
         const currentpage = 1;
         const gamesAll = await db.collection("games").find().toArray();
-        const numberpages = Math.round(gamesAll.length/4)
+        const numberpages = Math.round(gamesAll.length / 4);
         const games = gamesAll.slice((currentpage - 1) * 4, currentpage * 4);
         response.render("games", {
           filteredArray: await chargeNavBarGenres(),
@@ -282,7 +284,7 @@ export function makeApp(db: Db): core.Express {
         });
       } else {
         const gamesAll = await db.collection("games").find().toArray();
-        const numberpages = Math.round(gamesAll.length/4)
+        const numberpages = Math.round(gamesAll.length / 4);
         const games = gamesAll.slice((currentpage - 1) * 4, currentpage * 4);
         response.render("games", {
           filteredArray: await chargeNavBarGenres(),
@@ -296,7 +298,7 @@ export function makeApp(db: Db): core.Express {
     } else {
       const currentpage = 1;
       const gamesAll = await db.collection("games").find().toArray();
-      const numberpages = Math.round(gamesAll.length/4)
+      const numberpages = Math.round(gamesAll.length / 4);
       const games = gamesAll.slice((currentpage - 1) * 4, currentpage * 4);
       response.render("games", {
         filteredArray: await chargeNavBarGenres(),
@@ -346,7 +348,7 @@ export function makeApp(db: Db): core.Express {
             (currentpage - 1) * 4,
             currentpage * 4
           );
-          const numberpages = Math.round(gamePerGenre.length/4)
+          const numberpages = Math.round(gamePerGenre.length / 4);
           response.render("listGamePerGenres", {
             filteredArray: await chargeNavBarGenres(),
             arrayOfGamesPerGenre: game,
@@ -361,7 +363,7 @@ export function makeApp(db: Db): core.Express {
             .collection("games")
             .find({ genres: param })
             .toArray();
-            const numberpages = Math.round(gamePerGenre.length/4)
+          const numberpages = Math.round(gamePerGenre.length / 4);
           const game = gamePerGenre.slice(
             (currentpage - 1) * 4,
             currentpage * 4
@@ -384,7 +386,7 @@ export function makeApp(db: Db): core.Express {
           .toArray();
 
         const game = gamePerGenre.slice((currentpage - 1) * 4, currentpage * 4);
-        const numberpages = Math.round(gamePerGenre.length/4)
+        const numberpages = Math.round(gamePerGenre.length / 4);
         response.render("listGamePerGenres", {
           filteredArray: await chargeNavBarGenres(),
           arrayOfGamesPerGenre: game,
