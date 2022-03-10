@@ -4,19 +4,22 @@
 {% block contenu%}
 {% if arrayGameSelected %}
     {% for game in arrayGameSelected %}
-<div class="card" id="details" class="shadow-lg p-3 mb-5 bg-body rounded" ><br>
-  <div class="container" id="imgDetails" class="shadow-lg p-3 mb-5 bg-body rounded">
-
-    <div class="shadow-lg p-3 mb-5 bg-body rounded">
-      <div class="card-header"class="shadow-lg p-3 mb-5 bg-body rounded">
-           <h1>{{game.name}}  </h1>
-           <img src="{{game.cover.url}}"class="card-img-top imgGame"/>
-             <h5 class="card-title">{{game.summary}}</h5>
-          <div class="card-body">
+<div class="card" id="details" class="border-bottom" class="shadow-lg p-3 mb-5 bg-body rounded"  ><br>
+  <div class="container" id="imgDetails" class="shadow-lg p-3 mb-5 bg-body rounded"  >
+    <div class="row" >
+      <div class="col" >
+        <div class="shadow-lg p-3 mb-5 bg-body rounded" class="p-2 bg-light border">
+           <div class="card-header"class="shadow-lg p-3 mb-5 bg-body rounded">
+              <h1 >{{game.name}}  </h1>
+               <img src="{{game.cover.url}}"class="card-img-top imgGame"/>
+                 <h5 class="card-title">{{game.summary}}</h5>
+             <div class="card-body">
+           </div>
+         </div>
+                 <a href="/deleteGamesInToPanier?gameSelect={{game._id}}" class="btn btn-primary">Delete</a>
+         </div>
       </div>
-      </div>
-     <a href="/deleteGamesInToPanier?gameSelect={{game._id}}" class="btn btn-primary">Delete</a>
-    </div>
+     </div>
   </div>
 </div>
     {% endfor %}
