@@ -8,9 +8,13 @@
       {% for game in games %}
     <div class="col">
         <div class="card" style="width: 15rem;">
-    <img src="{{game.cover.url}}" class="card-img-top" alt="...">
+      {% if game.cover.url %}
+        <img src="{{game.cover.url}}" class="card-img-top imgGame" alt="...">
+      {% else %}
+        <img src="https://images.assetsdelivery.com/compings_v2/novitskiy1980/novitskiy19801711/novitskiy1980171100035.jpg" class="card-img-top imgGame" alt="...">
+      {% endif %}
     <div class="card-body">
-      <h5 class="card-title">{{game.name}}</h5>
+      <h6 class="card-title">{{game.name}}</h6>
     </div>
       <a href="/game/{{game._id}}" class="btn btn-primary">Take a look</a>
     </div>
