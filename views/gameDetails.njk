@@ -8,8 +8,16 @@
       <div class="container" id="imgDetails" class="shadow-lg p-3 mb-5 bg-body rounded">
 
         {# premiere partie game titre #}
+
         <div class="row">
+          <h3>Resume</h3><br>
+
           <div class="col" >
+            {% for game in game.genres%}
+
+  <h5>{{game.platform}}</h5>
+
+{% endfor %}
             {# 1 of 2 #}
               {% if game.cover.url %}
                  <img src="{{game.cover.url}}" class="shadow-lg p-3 mb-5 bg-body rounded" alt="...">
@@ -31,6 +39,8 @@
 
           {# deuxieme partie platform  #}
           <div class="row">
+            <h3>Platforms</h3><br>
+
             <div class="col" >
               {# 1 of 2 #}
               <img src="{{game.platform.platform_logo_url}}" class="shadow-lg p-3 mb-5 bg-body rounded"/>
@@ -40,6 +50,20 @@
                 <h3>{{game.platform.name}}</h3><br>
             </div>
           </div>
+
+          {# troisieme partie genres  #}
+          <div class="row">
+            <h3>Genres</h3><br>
+            <div class="col" >
+              {# 1 of 2 #}
+              <img src="{{game.platform.platform_logo_url}}" class="shadow-lg p-3 mb-5 bg-body rounded"/>
+            </div>
+            <div class="col" >
+                {# 2 of 2 #}
+                <h3>{{game.platform.name}}</h3><br>
+            </div>
+          </div>
+
     </div>
 
 {% if addPanierValidate %}
@@ -49,3 +73,5 @@
 {% endif %}
 
 {% endblock %}
+
+
