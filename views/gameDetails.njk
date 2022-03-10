@@ -4,67 +4,84 @@
 {% block contenu%}
 {% if game %}
 
-    <div class="container" id="details" class="shadow-lg p-3 mb-5 bg-body rounded" ><br><br>
-      <div class="container" id="imgDetails" class="shadow-lg p-3 mb-5 bg-body rounded">
-
-        {# premiere partie game titre #}
-        <div class="row">
-          <h3>Resume</h3><br>
-
-          <div class="col" >
-            {# 1 of 2 #}
-              {% if game.cover.url %}
-                 <img src="{{game.cover.url}}" class="shadow-lg p-3 mb-5 bg-body rounded" alt="...">
-              {% else %}
-                <img src="https://images.assetsdelivery.com/compings_v2/novitskiy1980/novitskiy19801711/novitskiy1980171100035.jpg" class="card-img-top imgGame" alt="...">
-              {% endif %}
+<!-- Product section-->
+<section class="py-5">
+  <div class="container px-4 px-lg-5 my-5">
+    <div class="row gx-4 gx-lg-5 align-items-center">
+      <div class="col-md-6"><img class="card-img-top mb-5 mb-md-0" src="{{game.cover.url}}" alt="..." /></div>
+      <div class="col-md-6">
+          <h1 class="display-5 fw-bolder">{{game.name}}</h1>
+          <div class="fs-5 mb-5">
           </div>
-          <div class="col" >
-            {# 2 of 2 #}
-            <h3>{{game.name}}</h3><br>
-            <p>{{game.summary}}</p>
-          </div>
+          <p class="lead">{{game.summary}}</p>
+          <div class="d-flex">
+            {# <input class="form-control text-center me-3" id="inputQuantity" type="num" value="1" style="max-width: 3rem" /> #}
             <a href="/AddGamesInToPanier?gameSelect={{game._id}}">
-              <button type="button" class="btn btn-lg btn-danger" data-bs-toggle="popover" title="Popover title" data-bs-content="And here's some amazing content. It's very engaging. Right?">
+              <button type="button" class="btn btn-lg btn-danger" data-bs-toggle="popover" title="Popover title" data-bs-content="add to Basket with success!">
                 Add to Basket
               </button>
             </a>
-        </div><br><br>
-
-          {# deuxieme partie platform  #}
-          <div class="row">
-            <h3>Platforms</h3><br>
-
-            <div class="col" >
-              {# 1 of 2 #}
-              <img src="{{game.platform.platform_logo_url}}" class="shadow-lg p-3 mb-5 bg-body rounded"/>
-            </div>
-            <div class="col" >
-                {# 2 of 2 #}
-                <h3>{{game.platform.name}}</h3><br>
-            </div>
           </div>
-
-          {# troisieme partie genres  #}
-          <div class="row">
-            <h3>Genres</h3><br>
-            <div class="col" >
-              {# 1 of 2 #}
-              <a href="https://www.flaticon.com/free-icons/game-development" title="game development icons">Game development icons created by juicy_fish - Flaticon</a>
-            </div>
-            <div class="col" >
-                {# 2 of 2 #}
-                <h3>{{game.platform.name}}</h3><br>
-            </div>
-          </div>
-
+      </div>
     </div>
+  </div>
+</section>
 
-{% if addPanierValidate %}
-  <p align="center">{{game.name}} ajouter au panier avec succès !</p>
+{# {% for game in relatedGames%}
+{% if game.cover %} #}
+<!-- Related items section-->
+<section class="py-5 bg-light">
+  <div class="container px-4 px-lg-5 mt-5">
+    <h2 class="fw-bolder mb-4">Related games</h2>
+    <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+{% for game in relatedGames%}
+{% if game.cover %}
+<div class="col mb-5">
+  <div class="card h-100">
+    <!-- Product image-->
+    <img class="card-img-top bg-image" src="{{game.cover.url}}" alt="..." />
+    <!-- Product details-->
+    <div class="card-body p-4">
+      <div class="text-center">
+          <!-- Product name-->
+          <h5 class="fw-bolder">{{game.name}}</h5>
+      </div>
+    </div>
+    <!-- Product actions-->
+    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+      <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="/AddGamesInToPanier?gameSelect={{game._id}}">View options</a></div>
+    </div>
+  </div>
+</div>
+{% else %}
+<div class="col mb-5">
+  <div class="card h-100">
+    <!-- Product image-->
+    <img class="card-img-top" src="/images/5847507.png" alt="..." />
+    <!-- Product details-->
+    <div class="card-body p-4">
+      <div class="text-center">
+          <!-- Product name-->
+          <h5 class="fw-bolder">{{game.name}}</h5>
+      </div>
+    </div>
+    <!-- Product actions-->
+    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+      <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="/AddGamesInToPanier?gameSelect={{game._id}}">View options</a></div>
+    </div>
+  </div>
+</div>
 {% endif %}
+{% endfor %}
+      </div>
+    </div>
+  </div>
+</section>
+
+
 
 {% endif %}
 
 {% endblock %}
+
 
