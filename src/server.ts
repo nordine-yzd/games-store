@@ -62,6 +62,8 @@ export function makeApp(db: Db): core.Express {
   //root for add game at panier
   app.get("/AddGamesInToPanier", async (request, response) => {
     const param = request.query.gameSelect;
+    const paramPrice = request.query.price;
+
     const cookies = cookie.parse(request.get("cookie") || "");
     const accesPanier = await valideTokkenId(cookies.token);
     const gamesAll = await db.collection("games").find().toArray();
@@ -74,7 +76,7 @@ export function makeApp(db: Db): core.Express {
 
     response.setHeader(
       "Set-Cookie",
-      cookie.serialize(`gameSelected${param}`, `${param}`, {
+      cookie.serialize(`gameSelected${param}`, `${param}?${paramPrice}`, {
         httpOnly: true,
         secure: process.env.NODE_ENV !== "development",
         maxAge: 60 * 60,
@@ -92,6 +94,7 @@ export function makeApp(db: Db): core.Express {
       addPanierValidate: true,
       accesPanier,
       relatedGames,
+      paramPrice,
     });
   });
 
@@ -99,7 +102,6 @@ export function makeApp(db: Db): core.Express {
   app.get("/deleteGamesInToPanier", async (request, response) => {
     const param = request.query.gameSelect;
     const cookies = cookie.parse(request.get("cookie") || "");
-
     const arrayOfCookies: string[] = [];
     for (const cookie in cookies) {
       if (cookie !== "token" && cookies[cookie] === param) {
@@ -117,6 +119,7 @@ export function makeApp(db: Db): core.Express {
   app.get("/home", async (request: Request, response: Response) => {
     const cookies = cookie.parse(request.get("cookie") || "");
     const accesPanier = await valideTokkenId(cookies.token);
+
     response.render("home", {
       filteredArray: await chargeNavBarGenres(),
       listPlatforms: await chargeNavBarPlatform(),
@@ -162,6 +165,7 @@ export function makeApp(db: Db): core.Express {
         listPlatforms: await chargeNavBarPlatform(),
         game,
         accesPanier,
+        price: (Math.random() * (100 - 10 + 1) + 10).toFixed(2),
       });
     } else {
       response.redirect(`${request.headers.referer}`);
@@ -183,10 +187,15 @@ export function makeApp(db: Db): core.Express {
 
       //call to the db for get games
       const arrayGameSelected = [];
+      let totalOfPrice = 0;
       for (let i = 0; i < arrayOfCookies.length; i++) {
-        const idFormat = new ObjectId(arrayOfCookies[i]);
+        const idFormat = new ObjectId(arrayOfCookies[i].split("?")[0]);
         const game = await db.collection("games").findOne({ _id: idFormat });
-        arrayGameSelected.push(game);
+        arrayGameSelected.push({
+          ...game,
+          price: arrayOfCookies[i].split("?")[1],
+        });
+        totalOfPrice += parseFloat(arrayOfCookies[i].split("?")[1]);
       }
 
       response.render("panier", {
@@ -194,6 +203,7 @@ export function makeApp(db: Db): core.Express {
         listPlatforms: await chargeNavBarPlatform(),
         arrayGameSelected,
         accesPanier,
+        totalOfPrice,
       });
     } else {
       response.redirect("/home");
@@ -330,7 +340,6 @@ export function makeApp(db: Db): core.Express {
       const random = Math.floor(Math.random() * 100 + 1);
       relatedGames.push(gamesAll[random]);
     }
-    console.log(relatedGames);
 
     const game = await db.collection("games").findOne({ _id: idGameSelected });
     response.render("gameDetails", {
@@ -339,6 +348,7 @@ export function makeApp(db: Db): core.Express {
       game,
       accesPanier,
       relatedGames,
+      price: (Math.random() * (100 - 10 + 1) + 10).toFixed(2),
     });
   });
 
