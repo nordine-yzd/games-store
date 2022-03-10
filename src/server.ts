@@ -90,7 +90,6 @@ export function makeApp(db: Db): core.Express {
   app.get("/deleteGamesInToPanier", async (request, response) => {
     const param = request.query.gameSelect;
     const cookies = cookie.parse(request.get("cookie") || "");
-    const accesPanier = await valideTokkenId(cookies.token);
 
     const arrayOfCookies: string[] = [];
     for (const cookie in cookies) {
@@ -165,27 +164,31 @@ export function makeApp(db: Db): core.Express {
     const cookies = cookie.parse(request.get("cookie") || "");
     const accesPanier = await valideTokkenId(cookies.token);
 
-    const arrayOfCookies: string[] = [];
-    for (const cookie in cookies) {
-      if (cookie !== "token") {
-        arrayOfCookies.push(`${cookies[cookie]}`);
+    if (accesPanier === true) {
+      const arrayOfCookies: string[] = [];
+      for (const cookie in cookies) {
+        if (cookie !== "token") {
+          arrayOfCookies.push(`${cookies[cookie]}`);
+        }
       }
-    }
 
-    //call to the db for get games
-    const arrayGameSelected = [];
-    for (let i = 0; i < arrayOfCookies.length; i++) {
-      const idFormat = new ObjectId(arrayOfCookies[i]);
-      const game = await db.collection("games").findOne({ _id: idFormat });
-      arrayGameSelected.push(game);
-    }
+      //call to the db for get games
+      const arrayGameSelected = [];
+      for (let i = 0; i < arrayOfCookies.length; i++) {
+        const idFormat = new ObjectId(arrayOfCookies[i]);
+        const game = await db.collection("games").findOne({ _id: idFormat });
+        arrayGameSelected.push(game);
+      }
 
-    response.render("panier", {
-      filteredArray: await chargeNavBarGenres(),
-      listPlatforms: await chargeNavBarPlatform(),
-      arrayGameSelected,
-      accesPanier,
-    });
+      response.render("panier", {
+        filteredArray: await chargeNavBarGenres(),
+        listPlatforms: await chargeNavBarPlatform(),
+        arrayGameSelected,
+        accesPanier,
+      });
+    } else {
+      response.redirect("/home");
+    }
   });
 
   //create root for platforms slug
@@ -406,18 +409,15 @@ export function makeApp(db: Db): core.Express {
   });
 
   async function valideTokkenId(tokken: string) {
-    const tokkenData = await fetch(
-      "https://dev-embtxmk2.us.auth0.com/userinfo",
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${tokken}`,
-        },
-      }
-    )
+    const tokkenData = await fetch(`${process.env.AUTH0_DOMAIN}/userinfo`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${tokken}`,
+      },
+    })
       .then((element) => element.json())
-      .then((infos) => true)
-      .catch((error) => false);
+      .then(() => true)
+      .catch(() => false);
     return tokkenData;
   }
 
@@ -426,16 +426,13 @@ export function makeApp(db: Db): core.Express {
     const param = request.query.code;
 
     //get the tokken
-    const tokkenData = await fetch(
-      "https://dev-embtxmk2.us.auth0.com/oauth/token",
-      {
-        method: "POST",
-        headers: {
-          "content-type": "application/x-www-form-urlencoded",
-        },
-        body: `grant_type=authorization_code&client_id=bBw98jzJCrWx5qgKFM4TzJdNsUb18zOS&client_secret=uZ5C-KKDA9zS6numYs7VadVpn43NdNhsYkwkQKz8qKpGfpbMEClLAAyhk2RegTq4&code=${param}&redirect_uri=http://localhost:3000/callback`,
-      }
-    )
+    const tokkenData = await fetch(`${process.env.AUTH0_DOMAIN}/oauth/token`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/x-www-form-urlencoded",
+      },
+      body: `grant_type=authorization_code&client_id=${process.env.AUTH0_CLIENT_ID}&client_secret=${process.env.AUTH0_CLIENT_SECRET}&code=${param}&redirect_uri=${process.env.AUTH0_REDIRECTURI}`,
+    })
       .then((element) => element.json())
       .then((tokken) => tokken);
 
@@ -454,7 +451,7 @@ export function makeApp(db: Db): core.Express {
 
   //deconnection & destroye cookie
   app.get("/logout", async (request, response) => {
-    const url = `${process.env.AUTH0_DOMAIN}/v2/logout?client_id=${process.env.AUTH0_CLIENT_ID}&returnTo=http://localhost:3000`;
+    const url = `${process.env.AUTH0_DOMAIN}/v2/logout?client_id=${process.env.AUTH0_CLIENT_ID}&returnTo=http://localhost:3000/home`;
     const cookies = cookie.parse(request.get("cookie") || "");
 
     for (const cookie in cookies) {
