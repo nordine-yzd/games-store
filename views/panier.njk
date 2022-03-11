@@ -3,9 +3,8 @@
 {% block top%}{% endblock %}
 {% block contenu%}
      <div class="container" id="details" class="shadow-lg p-3 mb-5 bg-body rounded" ><br><br>
-      <div>
-        Price of Basket :{{totalOfPrice}}
-      </div>
+
+
       <div class="container" id="imgDetails" class="shadow-lg p-3 mb-5 bg-body rounded">
 
         {# premiere partie game titre #}
@@ -22,24 +21,38 @@
           <div class="col" >
                      {# 1 of 2 #}
               <img src="{{game.cover.url}}"class="card-img-top imgGame"/>
-              <h4>{{game.price}}<h4>
+
           </div>
         <div class="col" >
                      {# 2 of 2 #}
               <h1 >{{game.name}}  </h1></br></br></br>
-              <h5 class="card-title">{{game.summary}}</h5>
+              <h5 class="card-title">{{game.summary}}</h5></br></br></br>
+
          </div>
 
              <div class="card-body">
            </div>
          </div>
+           <div class="row">
+          <div class="col" >
                  <a href="/deleteGamesInToPanier?gameSelect={{game._id}}?{{game.price}}" class="btn btn-primary">Delete</a>
+                 </div>
+                 <div class="col" >
+                 <h4>Price: {{game.price}} $<h4>
+
+                    </div>
          </div>
       </div>
      </div>
 
+
 </div>
     {% endfor %}
+
+    <a href="" class="btn btn-primary">Total : {{totalOfPrice}}$</a>
+
+
+        </div>
   {% endif %}
 {% endblock %}
 
