@@ -10,12 +10,18 @@
     <div class="col">
         <div class="card" style="width: 15rem;">
       {% if game.cover.url %}
+      <a href="/game/{{game._id}}">
         <img src="{{game.cover.url}}" class="card-img-top imgGame" alt="...">
+      </a>
       {% else %}
+      <a href="/game/{{game._id}}">
         <img src="https://images.assetsdelivery.com/compings_v2/novitskiy1980/novitskiy19801711/novitskiy1980171100035.jpg" class="card-img-top imgGame" alt="...">
+      </a>
       {% endif %}
     <div class="card-body">
-      <h6 class="card-title">{{game.name}}</h6>
+      <a href="/game/{{game._id}}" class="text-card">
+        <h6 class="card-title">{{game.name}}</h6>
+      </a>
     </div>
       <a href="/game/{{game._id}}" class="btn btn-primary">Take a look</a>
     </div>
