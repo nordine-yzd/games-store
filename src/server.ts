@@ -137,7 +137,6 @@ export function makeApp(db: Db): core.Express {
     const gamesAll = await db.collection("games").find().toArray();
     const arrayOfFourGame: any[] = [];
     arrayOfFourGame.push(gamesAll[3], gamesAll[84], gamesAll[93], gamesAll[22]);
-    console.log(arrayOfFourGame);
 
     response.render("home", {
       filteredArray: await chargeNavBarGenres(),
