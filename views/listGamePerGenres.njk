@@ -2,40 +2,67 @@
 
 {% block top%}{% endblock %}
 {% block contenu%}
-
-  {% if arrayOfGamesPerGenre %}
-    <div class="container" style="height: 25rem;">
-    <div class="row">
-      {% for game in arrayOfGamesPerGenre%}
-    <div class="col">
-        <div class="card" style="width: 15rem;">
-      {% if game.cover.url %}
-      <a href="/game/{{game._id}}">
-        <img src="{{game.cover.url}}" class="card-img-top imgGame" alt="...">
-      </a>
-      {% else %}
-      <a href="/game/{{game._id}}">
-        <img src="https://images.assetsdelivery.com/compings_v2/novitskiy1980/novitskiy19801711/novitskiy1980171100035.jpg" class="card-img-top imgGame" alt="...">
-      </a>
-      {% endif %}
-    <div class="card-body">
-      <a href="/game/{{game._id}}" class="text-card">
-        <h6 class="card-title">{{game.name}}</h6>
-      </a>
+{% if arrayOfGamesPerGenre %}
+<section class="py-5 bg-light">
+  <div class="container px-4 px-lg-5 mt-5">
+    {# <h2 class="fw-bolder mb-4">Related games</h2> #}
+    <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+{% for game in arrayOfGamesPerGenre%}
+{% if game.cover %}
+<div class="col mb-5">
+  <div class="card h-100">
+    <!-- Product image-->
+    <img class="card-img-top bg-image" src="{{game.cover.url}}" alt="..." />
+    <!-- Product details-->
+    <div class="card-body p-4">
+      <div class="text-center">
+          <!-- Product name-->
+          <h5 class="fw-bolder">{{game.name}}</h5>
+      </div>
     </div>
-      <a href="/game/{{game._id}}" class="btn btn-primary">Take a look</a>
+    <!-- Product actions-->
+    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+      <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="/game/{{game._id}}">View options</a></div>
     </div>
   </div>
-    {% endfor %}
-  {% endif %}
-
-{% if currentpage >= 2 %}
-  <a href="/listGamePerGenres?genre={{param}}&page={{ currentpage - 1 }}"><button type="button" class="btn btn-secondary btn-lg">Previous</button></a>
+</div>
+{% else %}
+<div class="col mb-5">
+  <div class="card h-100">
+    <!-- Product image-->
+    <img class="card-img-top" src="/images/5847507.png" alt="..." />
+    <!-- Product details-->
+    <div class="card-body p-4">
+      <div class="text-center">
+          <!-- Product name-->
+          <h5 class="fw-bolder">{{game.name}}</h5>
+      </div>
+    </div>
+    <!-- Product actions-->
+    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+      <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="/game/{{game._id}}">View options</a></div>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endfor %}
+{% endif %}
+<nav aria-label="Page navigation example">
+  <ul class="pagination justify-content-center">
+    {% if currentpage >= 2 %}
+    <li class="page-item ">
+      <a class="page-link" href= "/listGamePerGenres?genre={{param}}&page={{ currentpage - 1 }}" tabindex="-1" >Previous</a>
+    </li>
     {% endif %}
-
+    {# <li class="page-item"><a class="page-link" href="/games?page={{ currentpage + 1 }}">{{ currentpage + 1 }}</a></li>
+    <li class="page-item"><a class="page-link" href="/games?page={{ currentpage + 2 }}">{{ currentpage + 2 }}</a></li>
+    <li class="page-item"><a class="page-link" href="/games?page={{ currentpage + 3 }}">{{ currentpage + 3 }}</a></li> #}
     {% if currentpage < numberpages %}
-<a href="/listGamePerGenres?genre={{param}}&page={{ currentpage + 1 }}"><button type="button" class="btn btn-secondary btn-lg">Next</button></a>
+    <li class="page-item">
+      <a class="page-link" href="/listGamePerGenres?genre={{param}}&page={{ currentpage + 1 }}">Next</a>
+    </li>
     {% endif %}
-
+  </ul>
+</nav>
 
 {% endblock %}
