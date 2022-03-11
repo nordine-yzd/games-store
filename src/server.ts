@@ -134,11 +134,16 @@ export function makeApp(db: Db): core.Express {
   app.get("/home", async (request: Request, response: Response) => {
     const cookies = cookie.parse(request.get("cookie") || "");
     const accesPanier = await valideTokkenId(cookies.token);
+    const gamesAll = await db.collection("games").find().toArray();
+    const arrayOfFourGame: any[] = [];
+    arrayOfFourGame.push(gamesAll[3], gamesAll[84], gamesAll[93], gamesAll[22]);
+    console.log(arrayOfFourGame);
 
     response.render("home", {
       filteredArray: await chargeNavBarGenres(),
       listPlatforms: await chargeNavBarPlatform(),
       accesPanier,
+      arrayOfFourGame,
     });
   });
 
