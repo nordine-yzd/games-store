@@ -12,12 +12,27 @@ export function makeApp(db: Db): core.Express {
     autoescape: true,
     express: app,
   });
+
   app.set("view engine", "njk");
   app.use(express.static("public"));
 
   app.get("/", (request: Request, response: Response) => {
     response.redirect("/home");
   });
+
+  //function to check the token is valide
+  async function valideTokkenId(tokken: string) {
+    const tokkenData = await fetch(`${process.env.AUTH0_DOMAIN}/userinfo`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${tokken}`,
+      },
+    })
+      .then((element) => element.json())
+      .then(() => true)
+      .catch(() => false);
+    return tokkenData;
+  }
 
   //we do use this function on all route for charge select genres
   async function chargeNavBarGenres() {
@@ -127,7 +142,7 @@ export function makeApp(db: Db): core.Express {
     });
   });
 
-  //create root for platforms
+  //create root for load platforms into navbar
   app.get("/platforms", async (request: Request, response: Response) => {
     const listPlatforms = await chargeNavBarPlatform();
     const cookies = cookie.parse(request.get("cookie") || "");
@@ -424,7 +439,7 @@ export function makeApp(db: Db): core.Express {
       }
     }
   );
-
+  //root authentification
   app.get("/login", async (request, response) => {
     const cookies = cookie.parse(request.get("cookie") || "");
     if (cookies.token === undefined) {
@@ -435,20 +450,7 @@ export function makeApp(db: Db): core.Express {
     }
   });
 
-  async function valideTokkenId(tokken: string) {
-    const tokkenData = await fetch(`${process.env.AUTH0_DOMAIN}/userinfo`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${tokken}`,
-      },
-    })
-      .then((element) => element.json())
-      .then(() => true)
-      .catch(() => false);
-    return tokkenData;
-  }
-
-  //create cookie
+  //root for create cookie
   app.get("/callback", async (request: Request, response: Response) => {
     const param = request.query.code;
 

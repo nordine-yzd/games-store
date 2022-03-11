@@ -16,3 +16,8 @@
   background-position: center;
   background-repeat: no-repeat;
 }
+
+.text-card {
+  text-decoration: none;
+  color: black;
+}

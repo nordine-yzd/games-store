@@ -68,38 +68,3 @@
 
 
 {% endblock %}
-
-
-  {# <div class="container" style="height: 25rem;"> #}
-    {# <div class="row"> #}
-      {# {% for game in games%} #}
-    {# <div class="col"> #}
-        {# <div class="card" style="width: 15rem;"> #}
-      {# {% if game.cover.url %} #}
-        {# <img src="{{game.cover.url}}" class="card-img-top imgGame" alt="..."> #}
-      {# {% else %} #}
-        {# <img src="/images/5847507.png" class="card-img-top imgGame" alt="..."> #}
-      {# {% endif %} #}
-    {# <div class="card-body"> #}
-      {# <h6 class="card-title">{{game.name}}</h6> #}
-    {# </div> #}
-      {# <a href="/game/{{game._id}}" class="btn btn-primary">Take a look</a> #}
-    {# </div> #}
-  {# </div> #}
-    {# {% endfor %} #}
-  {# {% endif %} #}
-
-
-
-
-    {# {% if currentpage >= 2 %} #}
-  {# <a href="/games?page={{ currentpage - 1 }}"><button type="button" class="btn btn-secondary btn-lg">Previous</button></a> #}
-    {# {% endif %} #}
-
-    {# {% if currentpage < numberpages %} #}
-  {# <a href="/games?page={{ currentpage + 1 }}"><button type="button" class="btn btn-secondary btn-lg">Next</button></a> #}
-    {# {% endif %} #}
-
-
-
-{# {% endblock %} #}
