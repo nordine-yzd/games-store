@@ -12,7 +12,9 @@
 <div class="col mb-5">
   <div class="card h-100">
     <!-- Product image-->
-    <img class="card-img-top bg-image" src="{{game.cover.url}}" alt="..." />
+    <a href="/game/{{game._id}}">
+      <img class="card-img-top bg-image" src="{{game.cover.url}}" alt="..." />
+    </a>
     <!-- Product details-->
     <div class="card-body p-4">
       <div class="text-center">
@@ -30,12 +32,16 @@
 <div class="col mb-5">
   <div class="card h-100">
     <!-- Product image-->
-    <img class="card-img-top" src="/images/5847507.png" alt="..." />
+    <a href="/game/{{game._id}}">
+      <img class="card-img-top" src="/images/5847507.png" alt="..." />
+    </a>
     <!-- Product details-->
     <div class="card-body p-4">
       <div class="text-center">
           <!-- Product name-->
-          <h5 class="fw-bolder">{{game.name}}</h5>
+          <a href="/game/{{game._id}}" class="text-card">
+            <h5 class="fw-bolder">{{game.name}}</h5>
+          </a>
       </div>
     </div>
     <!-- Product actions-->
